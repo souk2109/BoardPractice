@@ -32,13 +32,14 @@ public class Criteria {
 		return type == null? new String[]{}: type.split("");
 	}
 	
+	// 간단하게 uri 생성
 	public String getListLink() {
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath("")
 				.queryParam("pageNum", this.getPageNum())
 				.queryParam("amount", this.getAmount())
 				.queryParam("type", this.getType())
 				.queryParam("keyword", this.getKeyword());
-		 
+
 		return uriComponentsBuilder.toUriString();
 	}
 }
