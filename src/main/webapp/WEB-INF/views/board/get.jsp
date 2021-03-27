@@ -40,26 +40,93 @@
 		</div>
 	</div>
 	 
-	
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<i class="fa fa-bell fa-fw"></i>
+				</div>
+				<div class="panel-body">
+					<ul class="chat">
+						<li class="left clearfix" data-rno='12'>
+							<div>
+								<div class="header">
+									<strong class="primary-font"></strong>
+									<small class="pull-right text-muted"></small>
+								</div>
+								<p>글입니다.</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 	<script type="text/javascript" src="/board002/resources/js/reply.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			/* ajax통신 테스트 코드
 			
 			var bnoValue = '<c:out value="${board.bno}"/>';
+			
+			showList(1);
+			
+			function showList(page) {
+				var param = {bno:bnoValue, page:page||1};
+				replyService.getList(param, function(data) {
+					var str = '';
+					if(data === null || data.length === 0){
+						return;
+					}
+					
+					for(var i=0; i<data.length || 0; i++){
+						str += "<li class='left clearfix' data-rno='12'>"+
+									"<div>"+
+										"<div class='header'>"+
+											"<strong class='primary-font'>"+data[i].replyer+"</strong>"+
+											"<small class='pull-right text-muted'>"+replyService.displayTime(data[i].updatedate)+"</small>"+
+										"</div>"+
+										"<p>" + data[i].reply+"</p>"+
+									"</div>"+
+								"</li>";
+						 
+					}
+					$(".chat").html(str);
+				});
+			}
+			
+			 
+			
+			var str = '';
+			replyService.getList(param, function(data) {
+				for(var i=0; i<data.length || 0; i++){
+					str += "<li class='left clearfix' data-rno='12'>"+
+								"<div>"+
+									"<div class='header'>"+
+										"<strong class='primary-font'>"+data[i].replyer+"</strong>"+
+										"<small class='pull-right text-muted'>"+data[i].updatedate+"</small>"+
+									"</div>"+
+									"<p>" + data[i].reply+"</p>"+
+								"</div>"+
+							"</li>";
+					 
+				}
+				$(".chat").html(str);
+			});
+			 
+			 
+			
+			/* ajax통신 테스트 코드
+			
+			 
 			replyService.add({reply:"js test", replyer:"js tester",bno:bnoValue}, 
 				function(result) {
 					//alert(result);
 				}
 			);
 			
+			 
 			
-			var param = {bno:bnoValue, page:1}
-			replyService.getList(param, function(data) {
-				for(var i=0; i<data.length || 0; i++){
-					console.log(data[i]);
-				}
-			});
+			 
 			
 			
 			
