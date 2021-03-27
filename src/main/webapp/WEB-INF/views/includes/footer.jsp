@@ -10,7 +10,7 @@
     <script src="/board002/resources/vendor/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="/resources/vendor/metisMenu/metisMenu.min.js"></script>
+    <script src="/board002/resources/vendor/metisMenu/metisMenu.min.js"></script>
 
     <!-- DataTables JavaScript -->
     <script src="/board002/resources/vendor/datatables/js/jquery.dataTables.min.js"></script>
@@ -18,7 +18,7 @@
     <script src="/board002/resources/vendor/datatables-responsive/dataTables.responsive.js"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="/resources/dist/js/sb-admin-2.js"></script>
+    <script src="/board002/resources/dist/js/sb-admin-2.js"></script>
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>

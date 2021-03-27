@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@include file="../includes/header.jsp" %>
 	<div class="row">
 		<div class="col-lg-12">
@@ -39,8 +39,52 @@
 			</div>
 		</div>
 	</div>
-	${criteria.pageNum},
-	${criteria.amount}
+	 
+	
+	<script type="text/javascript" src="/board002/resources/js/reply.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/* ajax통신 테스트 코드
+			
+			var bnoValue = '<c:out value="${board.bno}"/>';
+			replyService.add({reply:"js test", replyer:"js tester",bno:bnoValue}, 
+				function(result) {
+					//alert(result);
+				}
+			);
+			
+			
+			var param = {bno:bnoValue, page:1}
+			replyService.getList(param, function(data) {
+				for(var i=0; i<data.length || 0; i++){
+					console.log(data[i]);
+				}
+			});
+			
+			
+			
+			replyService.remove(5, function(result) {
+				console.log(result);
+			}, function() {
+				console.log("실패");
+			});
+			
+			
+			
+			replyService.get(10, function(ReplyVO) {
+				console.log(ReplyVO);
+			});
+			
+			var reply ={rno:11,bno:bnoValue, reply:"수정했따!"};
+			replyService.update(reply, function(result) {
+				console.log("수정 성공!");
+			}, function() {
+				console.log("수정 실패");
+			});
+			
+			*/
+		})
+	</script>
 	<script>
 		$(document).ready(function() {
 			var formObj = $("#operForm");

@@ -1,5 +1,7 @@
 package org.example.controller;
 
+import java.util.stream.IntStream;
+
 import org.example.domain.BoardVO;
 import org.example.domain.Criteria;
 import org.example.domain.PageDTO;
@@ -70,6 +72,5 @@ public class BoardController {
 	}
 	@GetMapping("/register")
 	public void register() {
-		
 	}
 }
