@@ -42,9 +42,8 @@
 						</div>
 						 
 						
-						<button type="submit" class="btn btn-default" data-oper="modify">수정하기</button>
-						<button class="btn btn-default" data-oper="remove">삭제하기</button>	
-						<button class="btn btn-warning" data-oper="list">리스트 보기</button>
+						<button type="submit" class="btn btn-default" data-oper="modify">저장</button>
+						<button class="btn btn-warning" data-oper="list">취소</button>
 						
 						<input type='hidden' name='pageNum' value='${criteria.pageNum }'>
 						<input type='hidden' name='amount' value='${criteria.amount }'>
@@ -63,9 +62,7 @@
 			$("button").on("click", function(e) {
 				e.preventDefault();
 				var oper = $(this).data("oper");
-				if(oper === "remove"){
-					formObj.attr("action", "/board002/board/remove");
-				}
+
 				if(oper ==="list"){
 					formObj.attr("action","/board002/board/list");
 					formObj.attr("method","get");

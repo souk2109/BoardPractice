@@ -77,7 +77,8 @@ var replyService = (function() {
 			contentType : "application/json; charset=utf-8",
 			success : function(result, status, xhr) {
 				if(callback){
-					console.log("수정 성공? : "+result);
+					callback(result);
+					console.log("수정 성공?! : "+result);
 				}
 			},
 			error : function(xhr, status, er) {
@@ -102,7 +103,7 @@ var replyService = (function() {
 			var mi = dateObj.getMinutes();
 			var ss = dateObj.getSeconds();
 			// 시 분 초가 10보다 작은 경우 앞에 0을 붙여줌
-			return ['오늘',(hh > 9?'':'0')+hh,':',(mi > 9 ? '':'0')+mi,':',(ss > 9 ? '' : '0')+ss].join('');
+			return ['오늘 ',(hh > 9?'':'0')+hh,':',(mi > 9 ? '':'0')+mi,':',(ss > 9 ? '' : '0')+ss].join('');
 		}else{ // 24시간 이상 된 댓글의 경우
 			var yy = dateObj.getFullYear();
 			var mm = dateObj.getMonth()+1;

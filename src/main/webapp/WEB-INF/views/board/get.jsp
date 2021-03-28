@@ -25,7 +25,8 @@
 						<input class="form-control" name="writer" readonly="readonly" value="${board.writer }">
 					</div>
 					
-					<button class="btn btn-default" data-oper="modify">수정 or 삭제</button>
+					<button class="btn btn-default" data-oper="modify">수정 </button>
+					<button class="btn btn-default" data-oper="remove">삭제</button>
 					<button class="btn btn-warning" data-oper="list">리스트 보기</button>
 					
 					<form id="operForm" method="get" action="/board002/board/modify">
@@ -49,15 +50,7 @@
 				</div>
 				<div class="panel-body">
 					<ul class="chat">
-						<li class="left clearfix" data-rno='12'>
-							<div>
-								<div class="header">
-									<strong class="primary-font"></strong>
-									<small class="pull-right text-muted"></small>
-								</div>
-								<p></p>
-							</div>
-						</li>
+						
 					</ul>
 				</div>
 			</div>
@@ -89,7 +82,7 @@
 					 </div>
 				</div>
 				<div class="modal-footer">
-					<button id="modalModifyBtn" type="button" class="btn btn-default" data-dismiss="modal">변경하기</button>
+					<button id="modalModifyBtn" type="button" class="btn btn-default">변경하기</button>
 					<button id="modalRemoveBtn" type="button" class="btn btn-primary">삭제하기</button>
 					<button id="modalRegisterBtn" type="button" class="btn btn-primary">등록하기</button>
 					<button id="modalCloseBtn" type="button" class="btn btn-primary">닫기</button>
@@ -113,10 +106,10 @@
 				replyService.getList(param, function(data) {
 					var str = '';
 					if(data === null || data.length === 0){
+						$(".chat").html(str);
 						return;
 					}
-					
-					for(var i=0; i<data.length || 0; i++){
+					for(var i=0, len = data.length || 0; i<len; i++){
 						str += "<li class='left clearfix' data-rno="+data[i].rno+">"+
 									"<div>"+
 										"<div class='header'>"+
@@ -143,9 +136,9 @@
 			var modalRemoveBtn = $("#modalRemoveBtn");
 			var modalRegisterBtn = $("#modalRegisterBtn");
 			var modalCloseBtn = $("#modalCloseBtn");
-			
 			var addReplyBtn = $("#addReplyBtn");
 			
+			// 댓글 추가 버튼
 			addReplyBtn.on("click", function() {
 				modal.find("input").val('');
 				modalReplyDate.closest("div").hide();
@@ -156,10 +149,12 @@
 				modal.modal("show");
 			});
 			
+			// 모달창 닫기
 			modalCloseBtn.on("click", function() {
 				modal.modal("hide");
 			});
 			
+			// 댓글 등록 버튼
 			modalRegisterBtn.on("click", function(e) {
 				replyService.add({reply:modalReply.val(),replyer:modalReplyer.val(),bno:bnoValue}, 
 						function(result) {
@@ -170,13 +165,16 @@
 				modal.modal("hide");
 			});
 			
+			var rno=null;
+			
+			// 댓글 클릭 시
 			$(".chat").on("click","li", function() {
 				modal.modal("show");
 				modalModifyBtn.show();
 				modalRemoveBtn.show();
 				modalRegisterBtn.hide();
 				
-				var rno = $(this).data("rno");
+				rno = $(this).data("rno");
 				console.log("지금 rno: " + rno);
 				modalReplyDate.closest("div").show();
 				
@@ -186,35 +184,31 @@
 					modalReplyDate.val(replyService.displayTime(ReplyVO.updatedate)).attr("readonly","readonly");
 					console.log(ReplyVO);
 				});
-				
-				modalRemoveBtn.on("click", function() {
-					replyService.remove(rno, function(result) {
-						console.log(result);
-						modal.modal("hide");
-						showList(1);
-					}, function() {
-						console.log("실패");
-					});
-				})
-			});
-			/* ajax통신 테스트 코드
-			
-			replyService.remove(5, function(result) {
-				console.log(result);
-			}, function() {
-				console.log("실패");
 			});
 			
-
-			
-			var reply ={rno:11,bno:bnoValue, reply:"수정했따!"};
-			replyService.update(reply, function(result) {
-				console.log("수정 성공!");
-			}, function() {
-				console.log("수정 실패");
+			// 댓글 삭제 버튼 클릭
+			modalRemoveBtn.on("click", function() {
+				replyService.remove(rno, function(result) {
+					console.log("삭제 결과 :" + result);
+					modal.modal("hide");
+					showList(1);
+				}, function() {
+					console.log("실패");
+				});
 			});
 			
-			*/
+			modalModifyBtn.on("click", function() {
+				var reply2 = modalReply.val();
+				var reply ={rno:rno, bno:bnoValue, reply:reply2};
+				replyService.update(reply, function(result) {
+					console.log("수정 "+result+"!!!!");
+					modal.modal("hide");
+					showList(1);
+				}, function() {
+					console.log("수정 실패");
+				});
+				 
+			});
 		})
 	</script>
 	<script>
@@ -222,6 +216,20 @@
 			var formObj = $("#operForm");
 			
 			$("button[data-oper='modify']").on("click", function() {
+				formObj.submit();
+			});
+			$("button[data-oper='remove']").on("click", function(e) {
+				var str = '';
+				e.preventDefault();
+				formObj.empty();
+				formObj.attr("method","post");
+				formObj.attr("action", "/board002/board/remove");
+				 
+				str += "<input type='hidden' name='bno' value='${board.bno }'>"+
+						"<input type='hidden' name='pageNum' value='${criteria.pageNum}'>"+
+						"<input type='hidden' name='amount' value='${criteria.amount}'>";
+				formObj.append(str);
+				
 				formObj.submit();
 			});
 			
