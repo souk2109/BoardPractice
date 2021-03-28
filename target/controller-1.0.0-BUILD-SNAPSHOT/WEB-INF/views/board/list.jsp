@@ -18,21 +18,26 @@
 			</div>
 		</div>
 	</div>
-	<form id="searchform" method="get" action="/board002/board/list">
-		<select name="type">
-			<option value="TCW" ${criteria.type eq 'TCW' ?'selected':'' }>전체</option>
-			<option value="T" ${criteria.type eq 'T' ?'selected':''}>제목</option>
-			<option value="C" ${criteria.type eq 'C' ?'selected':'' }>내용</option>
-			<option value="W" ${criteria.type eq 'W' ?'selected':'' }>작성자</option>
-			<option value="TC" ${criteria.type eq 'TC' ?'selected':'' }>제목+내용</option>
-		</select>
-		
-		<input name="keyword" type="text" value="${criteria.keyword==null?'':criteria.keyword}">
-		<input type="submit" value="검색">
-		<input type="hidden" name="pageNum" value="1">
-		<input type="hidden" name="amount" value="10">
-		<input type="text" value="검색된 개수: ${total }" readonly="readonly">
-	</form>
+	<div class="row">
+		<div class="col-lg-12">
+		<form id="searchform" method="get" action="/board002/board/list">
+			<select name="type">
+				<option value="TCW" ${criteria.type eq 'TCW' ?'selected':'' }>전체</option>
+				<option value="T" ${criteria.type eq 'T' ?'selected':''}>제목</option>
+				<option value="C" ${criteria.type eq 'C' ?'selected':'' }>내용</option>
+				<option value="W" ${criteria.type eq 'W' ?'selected':'' }>작성자</option>
+				<option value="TC" ${criteria.type eq 'TC' ?'selected':'' }>제목+내용</option>
+			</select>
+			
+			<input name="keyword" type="text" value="${criteria.keyword==null?'':criteria.keyword}">
+			<input type="submit" value="검색">
+			<input type="hidden" name="pageNum" value="1">
+			<input type="hidden" name="amount" value="10">
+			<span>검색된 수 : ${total }</span>
+			 
+		</form>
+		</div>
+	</div>
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
@@ -75,8 +80,8 @@
 	<br>
 	
 	<c:if test="${pageMaker.prev }">
-		<a href="/board002/board/list?pageNum=${pageMaker.startPage-1 }&amount=${criteria.amount}">
-			<button class="btn btn-default">prev</button>
+		<a class="paginate_button" href="${pageMaker.startPage-1 }">
+			<button class="btn btn-default prev">prev</button>
 		</a>
 	</c:if>
 	
@@ -140,6 +145,7 @@
 				e.preventDefault();
 				if(!searchform.find("input[name='keyword']").val()){
 					alert('검색 키워드를 입력해주세요!');
+					return;
 				}
 				searchform.submit();
 			})

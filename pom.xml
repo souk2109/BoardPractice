@@ -165,7 +165,7 @@
 		    <groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
 		    <version>8.0.19</version>
-		</dependency> 
+		</dependency>
 		
 		<!-- Json 관련 설정 -->
 		<dependency>

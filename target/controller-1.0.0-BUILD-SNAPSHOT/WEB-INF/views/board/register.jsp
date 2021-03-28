@@ -25,8 +25,8 @@
 							<label>작성자</label>
 							<input class="form-control" name="writer">
 						</div>
-						<button class="btn btn-warning" type="reset">모두 지우기</button>
-						<button class="btn btn-default" type="submit">등록</button>
+						<button class="btn btn-default" type="reset">모두 지우기</button>
+						<button class="btn btn-warning" type="submit">등록</button>
 					</form>
 				</div>
 			</div>

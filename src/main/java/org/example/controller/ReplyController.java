@@ -41,6 +41,7 @@ public class ReplyController {
 		Criteria criteria = new Criteria(page, 10);
 		List<ReplyVO> list = service.getList(bno, criteria);
 		log.info("게시글" + bno + "번의 댓글들 조회!");
+		list.forEach(reply -> log.info(reply));
 		return new ResponseEntity<List<ReplyVO>>(list, HttpStatus.OK);
 	}
 	

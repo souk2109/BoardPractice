@@ -89,6 +89,7 @@ var replyService = (function() {
 	}
 	
 	function displayTime(timeValue) {
+		console.log("들어온 시간 : "+ timeValue);
 		var today = new Date();
 		var gab = today.getTime()-timeValue;
 		
@@ -96,15 +97,13 @@ var replyService = (function() {
 		
 		// 오늘 등록된 댓글인 경우
 		// 60*60*24: 하루의 총 second
-		if(gab < 60*60*24*1000){
+		if(gab < (60*60*24*1000)){
 			var hh = dateObj.getHours();
 			var mi = dateObj.getMinutes();
 			var ss = dateObj.getSeconds();
 			// 시 분 초가 10보다 작은 경우 앞에 0을 붙여줌
-			return [(hh > 9? '':'0')+hh,":",(mi > 9 ? '':'0')+mi,":",(ss > 9 ? '' : '0')+ss].join[''];
-		}
-		// 24시간 이상 된 댓글의 경우
-		else{
+			return ['오늘',(hh > 9?'':'0')+hh,':',(mi > 9 ? '':'0')+mi,':',(ss > 9 ? '' : '0')+ss].join('');
+		}else{ // 24시간 이상 된 댓글의 경우
 			var yy = dateObj.getFullYear();
 			var mm = dateObj.getMonth()+1;
 			var dd = dateObj.getDate();
