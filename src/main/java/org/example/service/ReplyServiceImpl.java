@@ -3,6 +3,7 @@ package org.example.service;
 import java.util.List;
 
 import org.example.domain.Criteria;
+import org.example.domain.ReplyPageDTO;
 import org.example.domain.ReplyVO;
 import org.example.mapper.ReplyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,18 @@ public class ReplyServiceImpl implements ReplyService{
 	public List<ReplyVO> getList(int bno, Criteria criteria) {
 		log.info("댓글 리스트 불러오기!");
 		return replyMapper.getListWithPaging(bno, criteria);
+	}
+
+	@Override
+	public int getTotal(int bno) {
+		return replyMapper.getReplyCount(bno);
+	}
+
+	@Override
+	public ReplyPageDTO getListPage(Criteria criteria, int bno) {
+		List<ReplyVO> list = replyMapper.getListWithPaging(bno, criteria);
+		int replyTotal = replyMapper.getReplyCount(bno);
+		return new ReplyPageDTO(replyTotal,list);
 	}
 	
 }

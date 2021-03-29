@@ -25,7 +25,7 @@ public class ReplyMapperTest {
 	public void testMapper() {
 		log.info(mapper);
 	}
-	
+	/* 
 	@Test
 	public void insertTest() {
 		ReplyVO replyVO = new ReplyVO();
@@ -62,4 +62,5 @@ public class ReplyMapperTest {
 		mapper.getListWithPaging(157, criteria);
 		//list.forEach(i->{log.info(i);});
 	}
+	*/
 }

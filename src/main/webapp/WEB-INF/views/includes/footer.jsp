@@ -29,7 +29,7 @@
         
         $(".sidebar-nav")
     		.attr("class","sidebar-nab navbar-collapse collapse")
-        	.attr("aria-expanded,",'false')
+        	.attr("aria-expanded",'false')
         	.attr("style", "height:1px");
     });
     </script>

@@ -3,6 +3,7 @@ package org.example.controller;
 import java.util.List;
 
 import org.example.domain.Criteria;
+import org.example.domain.ReplyPageDTO;
 import org.example.domain.ReplyVO;
 import org.example.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,12 @@ public class ReplyController {
 	}
 	
 	@GetMapping(value = "/pages/{bno}/{page}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
-	public ResponseEntity<List<ReplyVO>> getList(@PathVariable("bno") int bno,@PathVariable("page")int page){
+	public ResponseEntity<ReplyPageDTO> getList(@PathVariable("bno") int bno,@PathVariable("page")int page){
 		Criteria criteria = new Criteria(page, 10);
 		List<ReplyVO> list = service.getList(bno, criteria);
 		log.info("게시글" + bno + "번의 댓글들 조회!");
 		list.forEach(reply -> log.info(reply));
-		return new ResponseEntity<List<ReplyVO>>(list, HttpStatus.OK);
+		return new ResponseEntity<ReplyPageDTO>(service.getListPage(criteria, bno), HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value = "/{rno}", produces = MediaType.TEXT_PLAIN_VALUE)

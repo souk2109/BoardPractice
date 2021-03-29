@@ -20,7 +20,7 @@
 	</div>
 	<div class="row">
 		<div class="col-lg-12">
-		<form id="searchform" method="get" action="/board002/board/list">
+		<form id="searchform" method="get" action="/board002/board/list" style="margin-bottom: 20px; align-content: center;">
 			<select name="type">
 				<option value="TCW" ${criteria.type eq 'TCW' ?'selected':'' }>전체</option>
 				<option value="T" ${criteria.type eq 'T' ?'selected':''}>제목</option>
