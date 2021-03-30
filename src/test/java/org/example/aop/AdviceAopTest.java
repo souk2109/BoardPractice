@@ -1,5 +1,7 @@
-package org.example.service;
+package org.example.aop;
 
+import org.example.mapper.ReplyMapperTest;
+import org.example.service.BoardService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +14,14 @@ import lombok.extern.log4j.Log4j;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 @Log4j
-public class BoardServiceTest {
+
+
+public class AdviceAopTest {
 	@Autowired
 	private BoardService service;
-
+	
 	@Test
-	public void readTest() {
-		log.info(service.get(77));
-		  
+	public void aopIs() {
+		log.info(service.getClass().getName());
 	}
-
 }
