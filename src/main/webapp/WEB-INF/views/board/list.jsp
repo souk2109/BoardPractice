@@ -1,11 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@include file="../includes/header.jsp" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ 
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">게시판</h1>
+			<h1 class="page-header">
+				<sec:authorize access="isAuthenticated()">
+					<sec:authentication property="principal" var="user"/>
+						<c:out value="${user.nickname }의"/>
+				</sec:authorize>
+			게시판</h1>
 		</div>
 	</div>
 	

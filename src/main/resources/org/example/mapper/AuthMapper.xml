@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.mapper.AuthMapper">
+
+	<insert id="insertAuthUser">
+		insert into tbl_user_auth(id) values(#{id})
+	</insert>
+
+	<insert id="insertAuthMember">
+		insert into tbl_user_auth(id, auth) values(#{id},'ROLE_MEMBER')
+	</insert>
+</mapper>

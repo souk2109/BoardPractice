@@ -28,40 +28,16 @@ public class LogAdvice {
 		log.info("nnnnnnnnnnnnn");
 	}
 
-	
-	
-	
-	
-	
-	
-	@AfterReturning(pointcut = "execution(* org.example.service.BoardService*.*(*))", returning = "result")
-	public void aftert(Object result) {
-		log.info("결과 : " + result);
-	}
-	
-	
-	@Around("execution(* org.example.service.*.*(*))")
-	public void arount(ProceedingJoinPoint joinPoint) {
-		Object result = null;
-		try {
-			 result = joinPoint.proceed();
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		log.info("실행 끝 : " + result);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/*
+	 * @AfterReturning(pointcut =
+	 * "execution(* org.example.service.BoardService*.*(*))", returning = "result")
+	 * public void aftert(Object result) { Object getObj = result; if(result ==
+	 * null) getObj = ""; log.info("결과 : " + getObj); }
+	 */
 
-
+	/*
+	 * @Around("execution(* org.example.service.*.*(*))") public void
+	 * arount(ProceedingJoinPoint joinPoint) { Object result = null; Object[]
+	 * className = joinPoint.getArgs(); log.info("클래스 명: "+className[0]); }
+	 */
 }
