@@ -46,13 +46,16 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<i class="fa fa-bell fa-fw"></i>
+					총 댓글의 수 : <span id="replyTotal"></span>
 					<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">댓글 달기</button>
 				</div>
+				 
 				<div class="panel-body">
 					<ul class="chat">
 						
 					</ul>
 				</div>
+				<div class="panel-footer"></div>
 			</div>
 		</div>
 	</div>
@@ -89,41 +92,90 @@
 				</div>
 			</div>
 		</div>
-	
 	</div>
-	
-	
-	<script type="text/javascript" src="/board002/resources/js/reply.js"></script>
+ 
+<script type="text/javascript" src="/board002/resources/js/reply.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			
 			var bnoValue = '<c:out value="${board.bno}"/>';
-			var replyUl = $(".chat");
 			showList(1);
+			
 			
 			function showList(page) {
 				var param = {bno:bnoValue, page:page||1};
-				replyService.getList(param, function(data) {
+				console.log("파라미터"+param); 
+				replyService.getList(param, function(list, replyCnt) {
+					$("#replyTotal").html(replyCnt+"개");
+					if(page == -1){
+						var lastPage = Math.ceil(replyCnt/10);
+						pageNum = lastPage;
+						console.log("pageNum"+pageNum);
+						showList(lastPage);
+						showReplyPage(pageNum);
+						return;
+					}
+					 
 					var str = '';
-					if(data === null || data.length === 0){
+					if(list === null || list.length === 0){
 						$(".chat").html(str);
 						return;
 					}
-					for(var i=0, len = data.length || 0; i<len; i++){
-						str += "<li class='left clearfix' data-rno="+data[i].rno+">"+
+					
+					for(var i=0, len = list.length || 0; i<len; i++){
+						str += "<li class='left clearfix' data-rno="+list[i].rno+">"+
 									"<div>"+
 										"<div class='header'>"+
-											"<strong class='primary-font'>"+data[i].replyer+"</strong>"+
-											"<small class='pull-right text-muted'>"+replyService.displayTime(data[i].replydate)+"</small>"+
+											"<strong class='primary-font'>"+list[i].replyer+"</strong>"+
+											"<small class='pull-right text-muted'>"+replyService.displayTime(list[i].replydate)+"</small>"+
 										"</div>"+
-										"<p>" + data[i].reply+"</p>"+
+										"<p>" + list[i].reply+"</p>"+
 									"</div>"+
 								"</li>";
-						 
 					}
+					
 					$(".chat").html(str);
+					console.log(replyCnt);
+					showReplyPage(replyCnt);
 				});
 			}
+		 
+			var pageNum = 1;
+			console.log(pageNum);
+			var replyPageFooter = $(".panel-footer");
+			
+			function showReplyPage(replyCnt) {
+				var endPage = Math.ceil(pageNum/10.0)*10;
+				var startPage = endPage-9;
+				var realEnd = Math.ceil(replyCnt/10);
+				var prev = startPage == 1? false:true;
+				var next = realEnd > endPage? true : false;
+				if(realEnd <endPage){
+					endPage = realEnd;
+				}
+				
+				var str = "<ul class='pagination pull-right'>";
+				if(prev){
+					str += "<li class='page-item'><a claa='page-link' href='"+(startPage-1)+"'></a></li>";
+				}
+				for(var i=startPage; i<=endPage;i++){
+					var active = pageNum == i ?"active":"";
+					console.log(active);
+					str += "<li class='page-item "+active+"'><a claa='page-link' href='"+i+"'>"+i+"</a></li>";
+				}
+				if(next){
+					str += "<li class='page-item'><a claa='page-link' href='"+(endpage+1)+"'></a>next</li>";
+				}
+				str += "</ul>";
+				console.log(str);
+				replyPageFooter.html(str);
+			}
+			replyPageFooter.on("click","li a", function(e) {
+				e.preventDefault();
+				pageNum = $(this).attr("href");
+				showList(pageNum);
+				console.log(pageNum);
+			});
 			
 			
 			var modal = $(".modal");
@@ -159,7 +211,7 @@
 				replyService.add({reply:modalReply.val(),replyer:modalReplyer.val(),bno:bnoValue}, 
 						function(result) {
 							modal.find("input").val('');
-							showList(1);
+							showList(-1);
 						}
 					);
 				modal.modal("hide");
@@ -191,7 +243,7 @@
 				replyService.remove(rno, function(result) {
 					console.log("삭제 결과 :" + result);
 					modal.modal("hide");
-					showList(1);
+					showList(-1);
 				}, function() {
 					console.log("실패");
 				});
@@ -203,7 +255,7 @@
 				replyService.update(reply, function(result) {
 					console.log("수정 "+result+"!!!!");
 					modal.modal("hide");
-					showList(1);
+					showList(pageNum);
 				}, function() {
 					console.log("수정 실패");
 				});

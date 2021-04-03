@@ -51,7 +51,7 @@
 		
 		<select id="getListWithPaging" resultType="org.example.domain.BoardVO">
 			<![CDATA[
-				select bno, title, content, writer, regdate, updatedate
+				select bno, title, content, writer, regdate, updatedate, replyCnt
 				from (
 					SELECT @ROWNUM:=@ROWNUM+1 rownum, tbl_board.*
 					FROM tbl_board, (select @ROWNUM:=0) R
@@ -74,5 +74,7 @@
 			 
 		</select>
 		
-		 
+		 <update id="updateReplyCnt">
+		 	update tbl_board set replyCnt = replyCnt + #{amount} where bno = #{bno}
+		 </update>
 	</mapper>

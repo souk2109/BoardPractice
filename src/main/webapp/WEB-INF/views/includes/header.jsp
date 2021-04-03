@@ -300,8 +300,13 @@
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
-                        <sec:authorize access="isAuthenticated()"> 
-                        	<li><a href="/board002/user/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <sec:authorize access="isAuthenticated()">
+							<a href="#"
+								onclick="document.getElementById('logout-form').submit();" class="fa fa-sign-out fa-fw">Logout</a>
+							<form id="logout-form" action='<c:url value='/user/logout'/>' method="POST">
+								<%-- <input name="${_csrf.parameterName}" type="hidden"value="${_csrf.token}" /> --%>
+							</form>
+
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()"> 
                         	<li><a href="/board002/user/login"><i class="fa fa-sign-out fa-fw"></i> Login</a>

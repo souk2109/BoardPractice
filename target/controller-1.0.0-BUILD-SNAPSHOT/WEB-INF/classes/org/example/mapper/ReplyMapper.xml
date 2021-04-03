@@ -1,30 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-	<mapper namespace="org.example.mapper.ReplyMapper">
-	
-		<insert id="insert">
-			insert into tbl_reply(bno,reply,replyer) values(#{bno},#{reply},#{replyer})
-		</insert>
-		
-		<select id="get" resultType="org.example.domain.ReplyVO">
+<mapper namespace="org.example.mapper.ReplyMapper">
+
+	<insert id="insert">
+		insert into tbl_reply(bno,reply,replyer)
+		values(#{bno},#{reply},#{replyer})
+	</insert>
+
+	<select id="get" resultType="org.example.domain.ReplyVO">
 			<![CDATA[
 					select * from tbl_reply where rno=#{rno}
 			]]>
-		</select>
-		
-		<delete id="remove">
-			delete from tbl_reply where rno=#{rno}
-		</delete>
-		
-		<update id="update">
-			update tbl_reply 
-			set reply = #{reply}, updatedate = current_timestamp 
-			where rno = #{rno}
-		</update>
-		
-		<select id="getListWithPaging" resultType="org.example.domain.ReplyVO">
-			select * from tbl_reply where bno = #{bno} order by rno asc
-		</select>
-		
-	</mapper>
+	</select>
+
+	<delete id="remove">
+		delete from tbl_reply where rno=#{rno}
+	</delete>
+
+	<update id="update">
+		update tbl_reply
+		set reply = #{reply}, updatedate =
+		current_timestamp
+		where rno = #{rno}
+	</update>
+
+	<select id="getListWithPaging"
+		resultType="org.example.domain.ReplyVO">
+		<![CDATA[
+			select bno, rno, reply, replyer, replydate, updatedate
+			from (
+			SELECT @ROWNUM:=@ROWNUM+1 rownum, tbl_reply.*
+			FROM tbl_reply, (select @ROWNUM:=0) R
+			where bno =#{bno}
+			ORDER BY bno asc
+			)tbl
+			where rownum > ( (#{criteria.pageNum}-1) * #{criteria.amount}) && rownum <= #{criteria.pageNum} * #{criteria.amount}
+		]]>
+
+	</select>
+
+	<select id="getReplyCount" resultType="int">
+		select count(*) from tbl_reply where bno=#{bno}
+	</select>
+
+
+</mapper>

@@ -24,13 +24,14 @@ var replyService = (function() {
 	};
 	
 	function getList(param, callback, error) {
-		console.log("모든 댓글 가져오기!");
+		console.log("모든 댓글 가져오기!!!");
 		var bno = param.bno;
 		var page = param.page || 1;
 		
 		$.getJSON("/board002/reply/pages/"+bno +"/"+page + ".json", function(data) {
-			if(callback){
-				callback(data);
+			if(data){
+				callback(data.list, data.replyCnt);
+				console.log(data.list);
 			}
 		}).fail(function(xhr, status, err) {
 			if(error)
@@ -90,20 +91,24 @@ var replyService = (function() {
 	}
 	
 	function displayTime(timeValue) {
-		console.log("들어온 시간 : "+ timeValue);
 		var today = new Date();
 		var gab = today.getTime()-timeValue;
 		
 		var dateObj = new Date(timeValue);
-		
+		 
 		// 오늘 등록된 댓글인 경우
 		// 60*60*24: 하루의 총 second
+		
 		if(gab < (60*60*24*1000)){
 			var hh = dateObj.getHours();
 			var mi = dateObj.getMinutes();
 			var ss = dateObj.getSeconds();
+			var dateEqual =  dateObj.getDate() === today.getDate() ? true : false;
+			if(dateEqual){
+				return ['오늘 ',(hh > 9?'':'0')+hh,':',(mi > 9 ? '':'0')+mi,':',(ss > 9 ? '' : '0')+ss].join('');
+			}
 			// 시 분 초가 10보다 작은 경우 앞에 0을 붙여줌
-			return ['오늘 ',(hh > 9?'':'0')+hh,':',(mi > 9 ? '':'0')+mi,':',(ss > 9 ? '' : '0')+ss].join('');
+			return ['어제 ',(hh > 9?'':'0')+hh,':',(mi > 9 ? '':'0')+mi,':',(ss > 9 ? '' : '0')+ss].join('');
 		}else{ // 24시간 이상 된 댓글의 경우
 			var yy = dateObj.getFullYear();
 			var mm = dateObj.getMonth()+1;
