@@ -9,9 +9,10 @@
 	<security:http>
 		<!-- <security:access-denied-handler ref=""/> -->
 		<security:intercept-url pattern="/" access="permitAll"/>
-		
 		<security:form-login login-page="/user/login" login-processing-url="/user/doLogin" 
 		username-parameter="id" password-parameter="pwd" authentication-success-handler-ref="loginSuccessHandler"/>
+		
+		<security:logout logout-success-url="/user/login" logout-url="/user/logout" invalidate-session="true"/>
 		
 		<security:csrf disabled="true"/>
 	</security:http>

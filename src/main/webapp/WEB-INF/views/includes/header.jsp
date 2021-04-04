@@ -19,19 +19,19 @@
     <link href="/board002/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="/board002//resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="/board002/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link href="/board002//resources/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="/board002/resources/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
 
     <!-- DataTables Responsive CSS -->
-    <link href="/board002//resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+    <link href="/board002/resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/board002//resources/dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="/board002/resources/dist/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="/board002//resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/board002/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
    
 	<style type="text/css">

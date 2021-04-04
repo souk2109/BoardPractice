@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.example.domain.UserVO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -26,5 +27,4 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		
 		response.sendRedirect("/board002/board/list");
 	}
-
 }
