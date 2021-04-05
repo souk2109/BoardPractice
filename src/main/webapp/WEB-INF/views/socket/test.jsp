@@ -1,3 +1,4 @@
+<!--  메세지 창에 id 대신 닉네임으로 변경 해야함 -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -5,7 +6,6 @@
 <%@include file="../includes/header.jsp"%>
 
 <sec:authentication property="principal" var="user"/>
-
 	<div class="row">
 		<div class="col-lg-12">
 			<h1 class="page-header">
@@ -30,6 +30,7 @@
 	</div>
 	
 	<script type="text/javascript">
+		const userNick = '<c:out value="${user.nickname }"/>';
 	 	const userId = '<c:out value="${user.username}"/>';
 		function connect() {
 			var was = new WebSocket("ws://localhost:8080/board002/socket/chatSocket");
