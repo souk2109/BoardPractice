@@ -295,6 +295,8 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/board002/socket/test"><i class="fa fa-comment fa-fw"></i> 채팅하기</a>
+                        </li>
                         <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
@@ -311,8 +313,6 @@
                         <sec:authorize access="isAnonymous()"> 
                         	<li><a href="/board002/user/login"><i class="fa fa-sign-out fa-fw"></i> Login</a>
                         </sec:authorize>
-                        
-                        </li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -335,10 +335,10 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="/board002/chat/mkchat"><i class="fa fa-dashboard fa-fw"></i> 채팅방 만들기</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                            <a href="/board002/chat/form"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="flot.html">Flot Charts</a>
