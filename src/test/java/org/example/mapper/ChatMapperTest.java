@@ -1,5 +1,7 @@
 package org.example.mapper;
 
+import java.util.List;
+
 import org.example.domain.ChatRoomVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,17 +19,20 @@ public class ChatMapperTest {
 	@Autowired
 	private ChatRoomMapper chatRoomMapper;
 	
+	/*
+	 * @Test public void innsertTest() { ChatRoomVO chatRoomVO = new ChatRoomVO();
+	 * 
+	 * chatRoomVO.setId("user5"); int chnum = (int)(Math.random()*10000)+1; // 1부터
+	 * 10,000까지 chatRoomVO.setChnum(chnum); chatRoomVO.setHostNick("스프링러");
+	 * chatRoomVO.setRoomNick("스프링 할사람"); chatRoomVO.setMaxNum(5);
+	 * chatRoomMapper.insert(chatRoomVO); }
+	 */
+	
 	@Test
-	public void innsertTest() {
-		ChatRoomVO chatRoomVO = new ChatRoomVO();
-		
-		chatRoomVO.setId("user5");
-		int chnum = (int)(Math.random()*10000)+1; // 1부터 10,000까지
-		chatRoomVO.setChnum(chnum);
-		chatRoomVO.setHostNick("스프링러");
-		chatRoomVO.setRoomNick("스프링 할사람");
-		chatRoomVO.setMaxNum(5);
-		chatRoomMapper.insert(chatRoomVO);
+	public void getTest() {
+		List<ChatRoomVO> list = chatRoomMapper.getList("user2");
+		list.forEach(room -> {
+			log.info(room);
+			});
 	}
-	 
 }

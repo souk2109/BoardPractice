@@ -335,7 +335,7 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="/board002/chat/mkchat"><i class="fa fa-dashboard fa-fw"></i> 채팅방 만들기</a>
+                            <a href="/board002/chat/makeChat"><i class="fa fa-dashboard fa-fw"></i> 채팅방 만들기</a>
                         </li>
                         <li>
                             <a href="/board002/chat/form"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>

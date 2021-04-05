@@ -1,5 +1,7 @@
 package org.example.service;
 
+import java.util.List;
+
 import org.example.domain.ChatRoomVO;
 import org.example.mapper.ChatRoomMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +32,10 @@ public class ChatServiceImpl implements ChatService{
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public List<ChatRoomVO> getMyList(String id) {
+		return chatRoomMapper.getList(id);
 	}
 }

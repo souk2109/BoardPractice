@@ -1,5 +1,7 @@
 package org.example.service;
 
+import java.util.List;
+
 import org.example.domain.ChatRoomVO;
 import org.example.mapper.ChatMapperTest;
 import org.junit.Test;
@@ -26,5 +28,13 @@ public class ChatServiceTest {
 		chatRoomVO.setMaxNum(5);
 		int result = chatService.makeChatRoom(chatRoomVO);
 		log.info("결과는 : "+result);
+	}
+	
+	@Test
+	public void getListTest() {
+		List<ChatRoomVO> list = chatService.getMyList("user2");
+		list.forEach(room -> {
+			log.info(room);
+		});
 	}
 }
