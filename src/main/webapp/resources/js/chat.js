@@ -39,6 +39,23 @@ var chatService = (function() {
 		});
 	}
 	
+	function updateChatRoom(chnum, callback, errpr) {
+		$.ajax({
+			type : 'put',
+			url : '/board002/chat/update/'+chnum,
+			success : function(deleteResult, status, xhr) {
+				if(callback){
+					callback(deleteResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error();
+				}
+			}
+		});
+	}
+	
 	function displayLongTime(timeValue) {	
 		let dateObj = new Date(timeValue);
 		let yy = dateObj.getFullYear();
@@ -91,6 +108,7 @@ var chatService = (function() {
 		deleteChatRoom : deleteChatRoom, 
 		getAllChatRooms : getAllChatRooms,
 		displayLongTime : displayLongTime,
-		displayShortTime : displayShortTime
+		displayShortTime : displayShortTime,
+		updateChatRoom : updateChatRoom
 	};
 })();
