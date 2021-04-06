@@ -5,38 +5,82 @@
 <%@include file="../includes/header.jsp"%>
 <sec:authentication property="principal" var="user"/>
 
-<h1>채팅방 만들기</h1>
-	<form id="mkchatForm" action="/board002/chat/makeChat" method="post">
-		아이디 <input type="text" name="id" readonly="readonly" value="${user.username }"><br>
-		별명 <input type="text" name="hostNick"> <br>
-		방 이름  <input type="text" name="roomNick" ><br>
-		인원수<input type="text" name="maxNum"><br>
-		<input id="mkchatSubmitBtn" type="submit" value="생성하기"><br>
-	</form>
-	
+<form class="form-horizontal" id="mkchatForm" action="/board002/chat/makeChat" method="post">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">아이디</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="id" value="${user.username }" placeholder="아이디" readonly="readonly">
+    </div>
+  </div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">닉네임</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" name="hostNick"
+				placeholder="닉네임">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label">방 이름</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" name="roomNick"
+				placeholder="방이름">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">설명</label>
+		<div class="col-sm-10">
+			<textarea class="form-control" style="text-align: left" rows="3" name="content"></textarea>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">제한 인원</label>
+		<div class="col-sm-10">
+			<select class="form-control" name="maxNum">
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+				<option>7</option>
+				<option>8</option>
+				<option>9</option>
+				<option>10</option>
+			</select>
+		</div>
+	</div>
+
+
+	<div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" id="mkchatSubmitBtn" class="btn btn-default">생성하기</button>
+    </div>
+  </div>
+  
+  
+</form>
+
 <script type="text/javascript">
-	let inputForm = $("#inputForm");
+	let mkchatForm = $("#mkchatForm");
 	let mkchatSubmitBtn = $("#mkchatSubmitBtn");
-	 
-	// 인원수가 숫자인지 검사. 나중에 스크롤로 선택하는 것으로 변경하면 수정할 예정
+	console.log('값 :'+ $(mkchatForm).val());
+	// 제한 인원 select로 수정 [2021/04/06]
 	$(mkchatSubmitBtn).on("click", function(e) {
-		 
+		e.preventDefault();
 		let hostNick = $("input[name='hostNick']").val().trim();
 		let roomNick = $("input[name='roomNick']").val().trim();
-		let maxNum = $("input[name='maxNum']").val().trim();
-		
 		if(hostNick == null || hostNick == ""){
 			alert('별명을 입력하세요');
 			e.preventDefault();
 		}
-		if(roomNick == null || roomNick == ""){
+		else if(roomNick == null || roomNick == ""){
 			alert('방 제목을 입력하세요');
 			e.preventDefault();
+		}else{
+			mkchatForm.submit();
 		}
-		if(isNaN(maxNum)|| maxNum == ""){
-			alert('인원수에 숫자를 입력하세요');
-			e.preventDefault();
-		}
+		
 	});
 </script>
 <%@include file="../includes/footer.jsp"%>

@@ -13,6 +13,7 @@ public class ChatRoomVO {
 	private String hostNick;
 	private String roomNick;
 	private int maxNum;
+	private String content;
 	private Date regDate;
-	// 채팅방 설명 추가하기 
+	
 }
