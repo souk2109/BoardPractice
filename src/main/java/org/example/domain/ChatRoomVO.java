@@ -15,5 +15,5 @@ public class ChatRoomVO {
 	private int maxNum;
 	private String content;
 	private Date regDate;
-	
+	private Date updateDate;
 }

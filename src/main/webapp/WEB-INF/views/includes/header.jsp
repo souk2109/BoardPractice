@@ -334,9 +334,16 @@
                             </div>
                             <!-- /input-group -->
                         </li>
+                        <sec:authorize access="isAuthenticated()">
+	                        <li>
+	                            <a href="/board002/chat/myChatRooms"><i class="fa fa-dashboard fa-fw"></i> 내가 만든 채팅방</a>
+	                        </li>
+                        </sec:authorize>
+                        
                         <li>
-                            <a href="/board002/chat/makeChat"><i class="fa fa-dashboard fa-fw"></i> 채팅방 만들기</a>
-                        </li>
+                        	<a href="/board002/chat/allChatRooms"><i class="fa fa-table fa-fw"></i> 채팅방 리스트</a>
+	                    </li>
+                        
                         <li>
                             <a href="/board002/chat/form"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">

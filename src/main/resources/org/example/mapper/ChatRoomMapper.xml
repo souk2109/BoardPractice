@@ -8,14 +8,21 @@
 	</insert>
 	
 	<select id="pkCheck" resultType="int">
-		select count(*)
-		from tbl_chat_room
-		where chnum = #{chnum}
+		select count(*) from tbl_chat_room where chnum = #{chnum}
 	</select>
 	
 	<select id="getList" resultType="org.example.domain.ChatRoomVO">
 		select *
 		from tbl_chat_room
 		where id = #{id}
+		ORDER BY regdate ASC
 	</select>
+	
+	<select id="getAllList" resultType="org.example.domain.ChatRoomVO">
+		select * from tbl_chat_room ORDER BY regdate DESC
+	</select>
+	
+	<delete id="delete">
+		delete from tbl_chat_room where chnum = #{chnum}
+	</delete>
 </mapper>

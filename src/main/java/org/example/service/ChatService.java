@@ -7,4 +7,6 @@ import org.example.domain.ChatRoomVO;
 public interface ChatService {
 	public int makeChatRoom(ChatRoomVO chatRoomVO);
 	public List<ChatRoomVO> getMyList(String id);
+	public List<ChatRoomVO> getAllList();
+	public int deleteRoom(int chnum);
 }

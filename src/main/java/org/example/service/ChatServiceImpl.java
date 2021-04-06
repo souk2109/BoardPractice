@@ -38,4 +38,14 @@ public class ChatServiceImpl implements ChatService{
 	public List<ChatRoomVO> getMyList(String id) {
 		return chatRoomMapper.getList(id);
 	}
+
+	@Override
+	public List<ChatRoomVO> getAllList() {
+		return chatRoomMapper.getAllList();
+	}
+
+	@Override
+	public int deleteRoom(int chnum) {
+		return chatRoomMapper.delete(chnum);
+	}
 }

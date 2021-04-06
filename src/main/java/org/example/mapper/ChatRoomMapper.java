@@ -8,4 +8,6 @@ public interface ChatRoomMapper {
 	public int insert(ChatRoomVO chatRoomVO);
 	public int pkCheck(int chnum);
 	public List<ChatRoomVO> getList(String id);
+	public List<ChatRoomVO> getAllList();
+	public int delete(int chnum);
 }

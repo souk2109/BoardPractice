@@ -57,8 +57,6 @@
       <button type="submit" id="mkchatSubmitBtn" class="btn btn-default">생성하기</button>
     </div>
   </div>
-  
-  
 </form>
 
 <script type="text/javascript">
