@@ -9,15 +9,15 @@
 	<security:http>
 		<!-- <security:access-denied-handler ref=""/> -->
 		<security:intercept-url pattern="/" access="permitAll"/>
+		<security:intercept-url pattern="/chat/*" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/socket/*" access="isAuthenticated()"/>
 		<security:form-login login-page="/user/login" login-processing-url="/user/doLogin" 
-		username-parameter="id" password-parameter="pwd" authentication-success-handler-ref="loginSuccessHandler"/>
-		
+		username-parameter="id" password-parameter="pwd"/>
+		<!-- authentication-success-handler-ref="loginSuccessHandler"나중에 설정해보기 -->
 		<security:logout logout-success-url="/user/login" logout-url="/user/logout" invalidate-session="true"/>
 		
 		<security:csrf disabled="true"/>
 	</security:http>
-	
-	
 	
 	<bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 	<bean id="userService" class="org.example.security.UserProviderService"></bean>

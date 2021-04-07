@@ -13,24 +13,18 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <title>스터디 게시판</title>
 
-    <!-- Bootstrap Core CSS -->
     <link href="/board002/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- MetisMenu CSS -->
     <link href="/board002/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
-    <!-- DataTables CSS -->
     <link href="/board002/resources/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
 
-    <!-- DataTables Responsive CSS -->
     <link href="/board002/resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
     <link href="/board002/resources/dist/css/sb-admin-2.css" rel="stylesheet">
 
-    <!-- Custom Fonts -->
     <link href="/board002/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
    
@@ -295,10 +289,12 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/board002/socket/test"><i class="fa fa-comment fa-fw"></i> 채팅하기</a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
+	                    <sec:authorize access="isAuthenticated()">
+	                        <li><a href="/board002/socket/test"><i class="fa fa-comment fa-fw"></i> 채팅하기</a>
+	                        </li>
+	                        <li><a href="/board002/chat/myChatRooms"><i class="fa fa-user fa-fw"></i> 내 채팅 관리하기</a>
+	                        </li>
+	                   	</sec:authorize>
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
@@ -334,29 +330,24 @@
                             </div>
                             <!-- /input-group -->
                         </li>
-                        <sec:authorize access="isAuthenticated()">
-	                        <li>
-	                            <a href="/board002/chat/myChatRooms"><i class="fa fa-dashboard fa-fw"></i> 내가 만든 채팅방</a>
-	                        </li>
-                        </sec:authorize>
-                        
-                        <li>
-                        	<a href="/board002/chat/allChatRooms"><i class="fa fa-table fa-fw"></i> 채팅방 리스트</a>
-	                    </li>
-                        
-                        <li>
-                            <a href="/board002/chat/form"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="flot.html">Flot Charts</a>
-                                </li>
-                                <li>
-                                    <a href="morris.html">Morris.js Charts</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
+						<li>
+							<a href="/board002/chat/allChatRooms">
+								<i class="fa fa-table fa-fw"></i> 채팅방 리스트
+							</a>
+						</li>
+						<!-- <li>
+							<a href="#">
+								<i class="fa fa-dashboard fa-fw"></i> ??
+							</a>
+						</li> -->
+						<!-- <li><a href="/board002/chat/form"><i
+								class="fa fa-bar-chart-o fa-fw"></i> Charts<span
+								class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">
+								<li><a href="flot.html">Flot Charts</a></li>
+								<li><a href="morris.html">Morris.js Charts</a></li>
+							</ul> /.nav-second-level</li> -->
+						<!-- <li>
                             <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
                         </li>
                         <li>
@@ -384,9 +375,9 @@
                                     <a href="grid.html">Grid</a>
                                 </li>
                             </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
+                            /.nav-second-level
+                        </li> -->
+                       <!--  <li>
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
@@ -411,12 +402,12 @@
                                             <a href="#">Third Level Item</a>
                                         </li>
                                     </ul>
-                                    <!-- /.nav-third-level -->
+                                    /.nav-third-level
                                 </li>
                             </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
+                            /.nav-second-level
+                        </li> -->
+                       <!--  <li>
                             <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
@@ -426,8 +417,8 @@
                                     <a href="login.html">Login Page</a>
                                 </li>
                             </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
+                            /.nav-second-level
+                        </li> -->
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

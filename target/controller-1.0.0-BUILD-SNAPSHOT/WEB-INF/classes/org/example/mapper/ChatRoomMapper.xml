@@ -31,9 +31,4 @@
 		set roomNick=#{roomNick}, maxNum=#{maxNum}, updatedate = current_timestamp()
 		where chnum = #{chnum}
 	</update>
-	
-	<insert id="joinRequest">
-		insert into tbl_chat_validate(id, chnum, regdate)
-		values(#{id},#{chnum}, current_timestamp());
-	</insert>
 </mapper>

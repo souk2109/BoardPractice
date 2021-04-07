@@ -63,6 +63,10 @@
 									<input class="btn btn-lg btn-success btn-block registerBtn"
 										type="submit" value="회원가입">
 								</div>
+								<div class="form-group">
+									<input class="btn btn-lg btn-success btn-block mainBtn"
+										type="submit" value="메인으로가기">
+								</div>
 							</fieldset>
 						</form>
 					</div> 
@@ -79,7 +83,14 @@
 			$("form").attr("method","get");
 			$("form").submit();
 		});
+		$(".mainBtn").on("click", function(e) {
+			e.preventDefault();
+			$("form").attr("action","/board002/board/list")
+			$("form").attr("method","get");
+			$("form").submit();
+		});
 	});	 
+	 
 	</script>
 </body>
 </html>

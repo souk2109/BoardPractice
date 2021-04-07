@@ -5,7 +5,10 @@
 <%@include file="../includes/header.jsp"%>
 <sec:authentication property="principal" var="user"/>
 	<h1>모든 채팅방 보기</h1>
-	<a href="/board002/chat/makeChat"><button class="btn btn-warning" style="margin-bottom: 30px; margin-top: 30px">방 생성하기</button></a>
+	<a href="/board002/chat/makeChat">
+		<button class="btn btn-warning" style="margin-bottom: 30px; margin-top: 30px">방 생성하기
+		</button>
+	</a>
 	<!-- 반응형 테이블 생성  -->
 	<div class="table-responsive">
 		<table class="table table-bordered table-hover"  style="text-align: center;">
@@ -23,23 +26,41 @@
 
 <script type="text/javascript">
 	const id = '<c:out value='${user.username}'/>';
-	// ajax 통신으로 생성한 방의 목록을 받아옴
-	chatService.getAllChatRooms(function(list) {
-		let str = '';
-		console.log(list.length);
-		for(var i=0; i<list.length; i++){
-			str += '<tr>';
-			str += '<td>' + (i+1) + '</td>';
-			str += '<td>' + list[i].hostNick + '</td>';
-			str += '<td>' + list[i].roomNick + '</td>';
-			str += '<td>' + list[i].maxNum + '</td>';
-			str += '<td>' + chatService.displayShortTime(list[i].regDate) + '</td>';
-			str += "<td><button class='btn btn-priary'>신청</button></td>";
-			str += '</tr>';
-		}
-		$("#myRooms").append(str);
-	}, function() {
-		
-	})
+	 
+	function showChatRooms() {
+		// ajax 통신으로 생성한 방의 목록을 받아옴
+		chatService.getAllChatRooms(function(list) {
+			let str = '';
+			console.log(list.length);
+			for(var i=0; i<list.length; i++){
+				str += "<tr>";
+				str += "<td>" + (i+1) + "</td>";
+				str += "<td>" + list[i].hostNick + "</td>";
+				str += "<td class='roomNick'>" + list[i].roomNick + "</td>";
+				str += "<td class='maxNum'>" + list[i].maxNum + "</td>";
+				str += "<td>" + chatService.displayShortTime(list[i].regDate) + "</td>";
+				str += "<td><button class='btn btn-priary request'>신청</button></td>";
+				str += "<input type='hidden' class='chatNum' value='" + list[i].chnum + "'></input>";
+				str += "</tr>";
+			}
+			$("#myRooms").append(str);
+			btnService();
+		});
+	};
+	function btnService() {
+		$(".request").on("click", function() {
+			let chnum = $(this).closest("tr").find(".chatNum").val();
+			let requestInfo = {id:id, chnum:chnum};		
+			let requestCheck = confirm("정말 신청하시겠습니까?");
+			if(requestCheck){
+				chatService.requestJoinRoom(requestInfo, function() {
+					alert("신청이 완료되었습니다.");
+				});
+			}
+			
+		});
+	};
+	showChatRooms();
+	
 </script>
 <%@include file="../includes/footer.jsp"%>

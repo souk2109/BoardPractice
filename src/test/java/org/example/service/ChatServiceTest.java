@@ -19,16 +19,12 @@ public class ChatServiceTest {
 	@Autowired
 	private ChatService chatService;
 	
-	@Test
-	public void insertTest() {
-		ChatRoomVO chatRoomVO = new ChatRoomVO();
-		chatRoomVO.setId("user5");
-		chatRoomVO.setHostNick("스프링러");
-		chatRoomVO.setRoomNick("스프링 할사람");
-		chatRoomVO.setMaxNum(5);
-		int result = chatService.makeChatRoom(chatRoomVO);
-		log.info("결과는 : "+result);
-	}
+	/*
+	 * @Test public void insertTest() { ChatRoomVO chatRoomVO = new ChatRoomVO();
+	 * chatRoomVO.setId("user5"); chatRoomVO.setHostNick("스프링러");
+	 * chatRoomVO.setRoomNick("스프링 할사람"); chatRoomVO.setMaxNum(5); int result =
+	 * chatService.makeChatRoom(chatRoomVO); log.info("결과는 : "+result); }
+	 */
 	
 	@Test
 	public void getListTest() {

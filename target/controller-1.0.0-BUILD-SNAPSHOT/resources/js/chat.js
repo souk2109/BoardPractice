@@ -1,6 +1,5 @@
 var chatService = (function() {
 	
-	// 내가 만든 채팅방 요청
 	function getMyChatRooms(id, callback, error) {
 		$.getJSON("/board002/chat/myChatRoom/" + id +".json", function(data) {
 			if(data){
@@ -12,8 +11,6 @@ var chatService = (function() {
 		});
 		
 	}
-	
-	// 모든 채팅방 요청
 	function getAllChatRooms(callback) {
 		$.getJSON("/board002/chat/allChatRoom.json", function(data) {
 			if(data){
@@ -25,7 +22,6 @@ var chatService = (function() {
 		});
 	}
 	
-	// 방장이 채팅방 삭제 요청
 	function deleteChatRoom(chnum, callback, errpr) {
 		$.ajax({
 			type : 'delete',
@@ -43,7 +39,6 @@ var chatService = (function() {
 		});
 	}
 	
-	// 방장이 채팅방 수정 요청
 	function updateChatRoom(chatRoomObj, callback, error) {
 		$.ajax({
 			type : 'put',
@@ -53,26 +48,6 @@ var chatService = (function() {
 			success : function(updateResult, status, xhr) {
 				if(callback){
 					callback(updateResult);
-				}
-			},
-			error : function(xhr, status, err) {
-				if(error){
-					error(err);
-				}
-			}
-		});
-	}
-
-	// 채팅방에 참여신청
-	function requestJoinRoom(requestInfo, callback, error) {
-		$.ajax({
-			type : 'post',
-			url : '/board002/chat/request/'+requestInfo.chnum,
-			data : JSON.stringify(requestInfo),
-			contentType : "application/json; charset=utf-8",
-			success : function(requestResult, status, xhr) {
-				if(callback){
-					callback(requestResult);
 				}
 			},
 			error : function(xhr, status, err) {
@@ -97,8 +72,7 @@ var chatService = (function() {
 		mi = mi < 10 ? '0' + mi : mi;
 		return yy + '년 ' + mm + '월 ' + dd + '일' + hh+'시 '+ mi+'분 ';
 	}
-	 
-	 
+	
 	function displayShortTime(timeValue) {
 		let today = new Date(); // 현재의 시간 (실제 시간)
 		let gap = today.getTime()-timeValue; // 등록일 과의 시간 차(시스템 시간)
@@ -137,7 +111,6 @@ var chatService = (function() {
 		getAllChatRooms : getAllChatRooms,
 		displayLongTime : displayLongTime,
 		displayShortTime : displayShortTime,
-		updateChatRoom : updateChatRoom,
-		requestJoinRoom : requestJoinRoom
+		updateChatRoom : updateChatRoom
 	};
 })();

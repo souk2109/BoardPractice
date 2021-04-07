@@ -9,4 +9,6 @@ public interface ChatService {
 	public List<ChatRoomVO> getMyList(String id);
 	public List<ChatRoomVO> getAllList();
 	public int deleteRoom(int chnum);
+	public int updateRoom(ChatRoomVO chatRoomVO);
+	public int joinRequest(ChatRoomVO chatRoomVO);
 }

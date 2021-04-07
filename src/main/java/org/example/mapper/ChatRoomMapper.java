@@ -10,4 +10,6 @@ public interface ChatRoomMapper {
 	public List<ChatRoomVO> getList(String id);
 	public List<ChatRoomVO> getAllList();
 	public int delete(int chnum);
+	public int update(ChatRoomVO chatRoomVO);
+	public int joinRequest(ChatRoomVO chatRoomVO);
 }

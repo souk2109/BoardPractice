@@ -48,4 +48,14 @@ public class ChatServiceImpl implements ChatService{
 	public int deleteRoom(int chnum) {
 		return chatRoomMapper.delete(chnum);
 	}
+
+	@Override
+	public int updateRoom(ChatRoomVO chatRoomVO) {
+		return chatRoomMapper.update(chatRoomVO);
+	}
+
+	@Override
+	public int joinRequest(ChatRoomVO chatRoomVO) {
+		return chatRoomMapper.joinRequest(chatRoomVO);
+	}
 }

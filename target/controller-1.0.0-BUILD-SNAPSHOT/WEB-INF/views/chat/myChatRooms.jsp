@@ -4,47 +4,29 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@include file="../includes/header.jsp"%>
 <sec:authentication property="principal" var="user"/>
-	<div>
-		<h1>내가 만든 채팅방 보기</h1>
-		<a href="/board002/chat/makeChat"><button class="btn btn-warning" style="margin-bottom: 30px; margin-top: 30px">방 생성하기</button></a>
-		<!-- 반응형 테이블 생성  -->
-		<div class="table-responsive">
-			<table class="table table-bordered table-hover"  style="text-align: center;">
-				<thead>
-					<tr>
-						<th>번호</th><th>방번호</th><th>닉네임</th><th>방이름</th><th>제한인원</th><th>생성일</th><th>수정</th><th>삭제</th>
-					</tr>
-				</thead>
-				<tbody id="myRooms">
-				</tbody>
-			</table>
-		</div>
-	</div>
-	
-	<div>
-		<h1>채팅 요청 보기</h1>
-		
-		<div class="table-responsive">
-			<table class="table table-bordered table-hover"  style="text-align: center;">
-				<thead>
-					<tr>
-						<th>번호</th><th>신청인</th><th>방이름</th><th>신청일</th><th>승인</th><th>거절</th>
-					</tr>
-				</thead>
-				<tbody id="myRooms">
-				</tbody>
-			</table>
-		</div>
+	<h1>내가 만든 채팅방 보기</h1>
+	<a href="/board002/chat/makeChat"><button class="btn btn-warning" style="margin-bottom: 30px; margin-top: 30px">방 생성하기</button></a>
+	<!-- 반응형 테이블 생성  -->
+	<div class="table-responsive">
+		<table class="table table-bordered table-hover"  style="text-align: center;">
+			<thead>
+				<tr>
+					<th>번호</th><th>방번호</th><th>닉네임</th><th>방이름</th><th>제한인원</th><th>생성일</th><th>수정</th><th>삭제</th>
+				</tr>
+			</thead>
+			<tbody id="myRooms">
+			</tbody>
+		</table>
 	</div>
 <script type="text/javascript" src="/board002/resources/js/chat.js"></script>
 
 <script type="text/javascript">
 	const id = '<c:out value='${user.username}'/>';
 	// ajax 통신으로 생성한 방의 목록을 받아옴
-	function showMyRoomList() {
+	function showList() {
 		chatService.getMyChatRooms(id, function(list) {
 			let str = '';
-			// 받은 목록을 화면에 띄움
+			console.log(list.length);
 			for(var i=0; i<list.length; i++){
 				str += "<tr>";
 				str += "<td>" + (i+1) + "</td>";
@@ -63,7 +45,7 @@
 	}
 	 
 	
-	// 수정 또는 삭제 버튼 클릭시
+	// 수정 또는 삭제시 
 	function btnService() {
 		// 삭제 버튼 클릭시
 		$(".delBtn").on("click", function() {
@@ -73,7 +55,7 @@
 				chatService.deleteChatRoom(chnum, function(result) {
 					console.log("삭제 여부 : "+result);
 					$("#myRooms").html("");
-					showMyRoomList();
+					showList();
 				});
 			}
 			return;
@@ -116,7 +98,7 @@
 				let chatRoomObj = {chnum:chnum, maxNum:modMaxNum, roomNick:modRoomNick};
 				chatService.updateChatRoom(chatRoomObj, function() {
 					$("#myRooms").html("");
-					showMyRoomList();
+					showList();
 					return;
 				}, function(err) {
 					alert('요청 에러 발생 !');
@@ -124,6 +106,6 @@
 			}		
 		});
 	}
-	showMyRoomList();
+	showList();
 </script>
 <%@include file="../includes/footer.jsp"%>

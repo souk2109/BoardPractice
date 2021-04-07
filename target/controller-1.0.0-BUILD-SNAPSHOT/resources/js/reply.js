@@ -1,6 +1,3 @@
-
-console.log("Reply Module");
-
 var replyService = (function() {
 	
 	// add(reply, callback, error)에서 모든 파라미터를 채울 필요는 없다!
