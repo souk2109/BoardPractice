@@ -2,6 +2,7 @@ package org.example.service;
 
 import java.util.List;
 
+import org.example.domain.ChatMyRoomRequestVO;
 import org.example.domain.ChatRoomVO;
 import org.example.mapper.ChatMapperTest;
 import org.junit.Test;
@@ -33,4 +34,23 @@ public class ChatServiceTest {
 			log.info(room);
 		});
 	}
+	@Test
+	public void updateValidateTest() {
+		ChatRoomVO chatRoomVO = new ChatRoomVO();
+		chatRoomVO.setId("user3");
+		chatRoomVO.setHostNick("연습이용");
+		chatRoomVO.setRoomNick("연습용");
+		chatRoomVO.setMaxNum(10);
+		chatService.makeChatRoom(chatRoomVO);
+	}
+	@Test
+	public void getMyRoomRequestTest() {
+		List<ChatMyRoomRequestVO> list = chatService.getMyRoomRequests("user2");
+		list.forEach(room -> {
+			log.info(room);
+		});
+	}
+	
+
+	 
 }

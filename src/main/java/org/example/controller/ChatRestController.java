@@ -2,7 +2,10 @@ package org.example.controller;
 
 import java.util.List;
 
+import org.example.domain.ChatMyRoomRequestVO;
 import org.example.domain.ChatRoomVO;
+import org.example.domain.ChatUserCurrentState;
+import org.example.domain.ChatUserValidateVO;
 import org.example.domain.ReplyVO;
 import org.example.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +39,11 @@ public class ChatRestController {
 		return new ResponseEntity<List<ChatRoomVO>>(myRoomList, HttpStatus.OK);
 	}
 	 
-	@GetMapping(value = "/allChatRoom", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
+	@GetMapping(value = "/allChatRoom/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<List<ChatRoomVO>> getAllChatRooms(){
-		List<ChatRoomVO> allRoomList = chatService.getAllList();
-		return new ResponseEntity<List<ChatRoomVO>>(allRoomList, HttpStatus.OK);
+	public ResponseEntity<List<ChatUserCurrentState>> getAllChatRooms(@PathVariable("id") String id){
+		List<ChatUserCurrentState> allRoomList = chatService.getAllList(id);
+		return new ResponseEntity<List<ChatUserCurrentState>>(allRoomList, HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value = "/delete/{chnum}", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -58,11 +61,18 @@ public class ChatRestController {
 	}
 	
 	@PostMapping(value = "/request/{chnum}", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
-	public ResponseEntity<String> joinRequest(@RequestBody ChatRoomVO chatRoomVO) {
-		log.info(chatRoomVO);
-		int result = chatService.joinRequest(chatRoomVO);
+	public ResponseEntity<String> joinRequest(@RequestBody ChatUserValidateVO userValidateVO) {
+		log.info(userValidateVO);
+		int result = chatService.joinRequest(userValidateVO);
 		return result == 1 ? new ResponseEntity<String>("success", HttpStatus.OK)
 				: new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@GetMapping(value = "/getRequests/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<ChatMyRoomRequestVO>> getMyRoomRequest(@PathVariable("id") String id){
+		List<ChatMyRoomRequestVO> roomRequests = chatService.getMyRoomRequests(id);
+		return new ResponseEntity<List<ChatMyRoomRequestVO>>(roomRequests, HttpStatus.OK);
 	}
 }
 

@@ -18,8 +18,11 @@
 		ORDER BY regdate ASC
 	</select>
 	
-	<select id="getAllList" resultType="org.example.domain.ChatRoomVO">
-		select * from tbl_chat_room ORDER BY regdate DESC
+	<select id="getAllList" resultType="org.example.domain.ChatUserCurrentState">
+		select t1.chnum, t1.hostNick, t1.roomNick, t1.maxNum,  IFNULL(t2.validate, 0) validate, t1.regdate regdate, t2.requestdate requestdate, t2.updatedate updatedate
+		from tbl_chat_room t1
+		left join (select * from tbl_chat_validate where id= #{id}) t2
+		on t1.chnum = t2.chnum order by regdate desc;
 	</select>
 	
 	<delete id="delete">
@@ -32,8 +35,18 @@
 		where chnum = #{chnum}
 	</update>
 	
+	<!-- 채팅방 참여 신청을 한 것이므로 validate에 기본적으로 1을 입력 -->
 	<insert id="joinRequest">
-		insert into tbl_chat_validate(id, chnum, regdate)
-		values(#{id},#{chnum}, current_timestamp());
+		insert into tbl_chat_validate(id, chnum, validate)
+		values(#{id}, #{chnum}, 1);
 	</insert>
+
+	<!-- 내가 생성한 방에 신청한 요청들을 조회함  -->
+	<select id="getMyRoomRequests" resultType="org.example.domain.ChatMyRoomRequestVO">
+		select ro.id hostid, ro.chnum chnum, va.id userid, va.validate validate
+		from tbl_chat_validate va
+		right join (select * from tbl_chat_room where id=#{id}) ro
+		on va.chnum = ro.chnum;
+	</select>
+	
 </mapper>

@@ -31,7 +31,7 @@
 						<th>번호</th><th>신청인</th><th>방이름</th><th>신청일</th><th>승인</th><th>거절</th>
 					</tr>
 				</thead>
-				<tbody id="myRooms">
+				<tbody id="myRequests">
 				</tbody>
 			</table>
 		</div>
@@ -61,7 +61,26 @@
 			btnService();
 		});
 	}
-	 
+	// 내가 만든 채팅방에 요청 목록을 가져옴
+	function showMyRequestList() {
+		chatService.getMyRoomRequest(id, function(list) {
+			console.log(list);
+			let str = '';
+			// 받은 목록을 화면에 띄움
+			for(var i=0; i<list.length; i++){
+				str += "<tr>";
+				str += "<td>" + (i+1) + "</td>";
+				str += "<td class='userid'>" + list[i].userid + "</td>";
+				str += "<td class='roomNick'>list[i].roomNick</td>";
+				str += "<td class='regdate'>list[i].regDate</td>";
+				str += "<td><button class='btn btn-info'>승인하기</button></td>";
+				str += "<td><button class='btn btn-info'>거절하기</button></td>";
+				str += "</tr>";
+			}
+			$("#myRequests").append(str);
+			btnService();
+		});
+	} 
 	
 	// 수정 또는 삭제 버튼 클릭시
 	function btnService() {
@@ -125,5 +144,6 @@
 		});
 	}
 	showMyRoomList();
+	showMyRequestList();
 </script>
 <%@include file="../includes/footer.jsp"%>

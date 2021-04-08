@@ -13,9 +13,11 @@ var chatService = (function() {
 		
 	}
 	
-	// 모든 채팅방 요청
-	function getAllChatRooms(callback) {
-		$.getJSON("/board002/chat/allChatRoom.json", function(data) {
+	// 모든 채팅방 요청 
+	// 단 id를 보내서 사용자 별로 다르게 처리해야함 
+	// ex) 로그인한 사용자가 이미 요청한 채팅방이면 '처리 중'으로 표시
+	function getAllChatRooms(id, callback) {
+		$.getJSON("/board002/chat/allChatRoom/" + id + ".json", function(data) {
 			if(data){
 				callback(data);
 			}
@@ -83,6 +85,17 @@ var chatService = (function() {
 		});
 	}
 	
+	function getMyRoomRequest(id, callback) {
+		$.getJSON("/board002/chat/getRequests/" + id + ".json", function(data) {
+			if(data){
+				callback(data);
+			}
+		}).fail(function(xhr, status, err) {
+			if(error)
+				error();
+		});
+	}
+	
 	function displayLongTime(timeValue) {	
 		let dateObj = new Date(timeValue);
 		let yy = dateObj.getFullYear();
@@ -138,6 +151,7 @@ var chatService = (function() {
 		displayLongTime : displayLongTime,
 		displayShortTime : displayShortTime,
 		updateChatRoom : updateChatRoom,
-		requestJoinRoom : requestJoinRoom
+		requestJoinRoom : requestJoinRoom,
+		getMyRoomRequest : getMyRoomRequest
 	};
 })();

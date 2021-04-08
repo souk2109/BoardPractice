@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.ChatValidateMapper">
+	<!-- update 나중에 사용하기!  -->
+	<update id="updateValidate">
+		update tbl_chat_validate 
+		set validate = 2 
+		where id = #{id} and chnum = #{chnum}
+	</update>
+	
+	<insert id="insertValidate">
+		insert into tbl_chat_validate(chnum, id, validate) values(#{chnum}, #{id}, #{validate})
+	</insert>
+	
+</mapper>

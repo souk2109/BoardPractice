@@ -2,7 +2,9 @@ package org.example.mapper;
 
 import java.util.List;
 
+import org.example.domain.ChatMyRoomRequestVO;
 import org.example.domain.ChatRoomVO;
+import org.example.domain.ChatUserCurrentState;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class ChatMapperTest {
 	@Autowired
 	private ChatRoomMapper chatRoomMapper;
 	
+	@Autowired
+	private ChatValidateMapper chatValidateMapper;
 	/*
 	 * @Test public void innsertTest() { ChatRoomVO chatRoomVO = new ChatRoomVO();
 	 * 
@@ -30,9 +34,23 @@ public class ChatMapperTest {
 	
 	@Test
 	public void getTest() {
-		List<ChatRoomVO> list = chatRoomMapper.getList("user2");
+		List<ChatUserCurrentState> list = chatRoomMapper.getAllList("user2");
 		list.forEach(room -> {
 			log.info(room);
+			});
+	}
+	
+	@Test
+	public void updateTest() {
+		int result = chatValidateMapper.updateValidate(23, "user3");
+		log.info(result);
+	}
+	
+	@Test
+	public void getMyRequestTest() {
+		List<ChatMyRoomRequestVO> list = chatRoomMapper.getMyRoomRequests("user2");
+		list.forEach(room -> {
+			log.info(room.getHostid()+", " + room.getUserid());
 			});
 	}
 }
