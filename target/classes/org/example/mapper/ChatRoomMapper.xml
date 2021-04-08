@@ -43,7 +43,7 @@
 
 	<!-- 내가 생성한 방에 신청한 요청들을 조회함  -->
 	<select id="getMyRoomRequests" resultType="org.example.domain.ChatMyRoomRequestVO">
-		select ro.id hostid, ro.chnum chnum, va.id userid, va.validate validate
+		select va.id userid, ro.roomnick roomnick, ro.chnum chnum, va.validate validate, va.requestdate requestdate
 		from tbl_chat_validate va
 		right join (select * from tbl_chat_room where id=#{id}) ro
 		on va.chnum = ro.chnum;

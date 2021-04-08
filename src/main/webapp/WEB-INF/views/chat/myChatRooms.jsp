@@ -64,18 +64,19 @@
 	// 내가 만든 채팅방에 요청 목록을 가져옴
 	function showMyRequestList() {
 		chatService.getMyRoomRequest(id, function(list) {
-			console.log(list);
 			let str = '';
 			// 받은 목록을 화면에 띄움
 			for(var i=0; i<list.length; i++){
-				str += "<tr>";
-				str += "<td>" + (i+1) + "</td>";
-				str += "<td class='userid'>" + list[i].userid + "</td>";
-				str += "<td class='roomNick'>list[i].roomNick</td>";
-				str += "<td class='regdate'>list[i].regDate</td>";
-				str += "<td><button class='btn btn-info'>승인하기</button></td>";
-				str += "<td><button class='btn btn-info'>거절하기</button></td>";
-				str += "</tr>";
+				if(list[i].validate == 1){
+					str += "<tr>";
+					str += "<td>" + (i+1) + "</td>";
+					str += "<td class='userid'>" + list[i].userid.substr(0,3) + "*** </td>";
+					str += "<td class='roomNick'>" + list[i].roomnick + "</td>";
+					str += "<td class='requestdate'>" + chatService.displayLongTime(list[i].requestdate) + "</td>";
+					str += "<td><button class='btn btn-info'>승인하기</button></td>";
+					str += "<td><button class='btn btn-info'>거절하기</button></td>";
+					str += "</tr>";
+				}
 			}
 			$("#myRequests").append(str);
 			btnService();
