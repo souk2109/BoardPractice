@@ -83,4 +83,9 @@ public class ChatServiceImpl implements ChatService{
 	public List<ChatMyRoomRequestVO> getMyRoomRequests(String id) {
 		return chatRoomMapper.getMyRoomRequests(id);
 	}
+
+	@Override
+	public int updateRequest(ChatUserValidateVO userValidateVO) {//updateRequest
+		return chatValidateMapper.updateValidate(userValidateVO);
+	}
 }

@@ -8,7 +8,8 @@
 	<a href="/board002/chat/makeChat">
 		<button class="btn btn-warning" style="margin-bottom: 30px; margin-top: 30px">방 생성하기
 		</button>
-	</a>
+	</a>	
+	<button id="repeat" class="btn btn-primary glyphicon glyphicon-repeat" aria-hidden="true" style="margin-bottom: 30px; margin-top: 30px"></button>
 	<!-- 반응형 테이블 생성  -->
 	<div class="table-responsive">
 		<table class="table table-bordered table-hover"  style="text-align: center;">
@@ -33,7 +34,6 @@
 		
 		// host id도 같이 받아서 신청할 때 db에 넣어주기
 		chatService.getAllChatRooms(id, function(list) {
-			console.log(list);
 			$("#myRooms").html('');
 			let str = '';
 			for(var i=0; i<list.length; i++){
@@ -41,18 +41,21 @@
 				str += "<td>" + (i+1) + "</td>";
 				str += "<td>" + list[i].hostNick + "</td>";
 				str += "<td class='roomNick'>" + list[i].roomNick + "</td>";
-				str += "<td class='maxNum'>" + list[i].maxNum + "</td>";
+				str += "<td class='maxNum'>"+ list[i].currentNum +"/" + list[i].maxNum + "</td>";
 				str += "<td>" + chatService.displayShortTime(list[i].regdate) + "</td>";
-				if(list[i].validate == 1){
-					str += "<td><button class='btn btn-priary request' disabled>처리중</button>";
-					str += "<button class='btn btn-priary warning'>취소</button></td>";
-				}else if(list[i].validate == 0){
+				
+				if(list[i].validate == 0){
 					str += "<td><button class='btn btn-success request'>신청</button></td>";
+				}
+				else if(list[i].validate == 1){
+					str += "<td><button class='btn btn-priary request' disabled>처리중</button>";
+					str += "<button class='btn btn-warning cancel'>취소</button></td>";
 				}else if(list[i].validate == 2){
 					str += "<td><button class='btn request' disabled>내방</button></td>";
-				}
-				else{
-					str += "<td><button class='btn btn-priary request'>뭐할까</button></td>";
+				}else if(list[i].validate == 3){
+					str += "<td><button class='btn request' disabled>거절됨</button>";
+					// 재신청은 해당하는 id와 chnum에  validate를 1로 바꾸면 됨
+					str += "<button class='btn btn-priary warning resend'>재신청</button></td>";
 				}
 				str += "<input type='hidden' class='chatNum' value='" + list[i].chnum + "'></input>";
 				str += "</tr>";
@@ -64,7 +67,6 @@
 	function btnService() {
 		$(".request").on("click", function() {
 			let chnum = $(this).closest("tr").find(".chatNum").val();
-			console.log(chnum);
 			let requestInfo = {id:id, chnum:chnum};		
 			let requestCheck = confirm("정말 신청하시겠습니까?");
 			if(requestCheck){
@@ -76,8 +78,38 @@
 				});
 			}
 		});
+		
+		$(".resend").on("click", function() {
+			let chnum = $(this).closest("tr").find(".chatNum").val();
+			let resendtInfo = {id:id, chnum:chnum, validate:1};		
+			let requestCheck = confirm("다시 신청하시겠습니까?" + chnum + ","+id );
+			if(requestCheck){
+				chatService.updateValidate(resendtInfo, function(result) {
+					showChatRooms();
+				}, function() {
+					alert("참여 중 이거나 이미 신청한 채팅방입니다.");
+				});
+			}
+		});
+		
+		$(".cancel").on("click", function() {
+			let chnum = $(this).closest("tr").find(".chatNum").val();
+			let cancelInfo = {id:id, chnum:chnum, validate:0};		
+			let requestCheck = confirm("취소하시겠습니까?");
+			if(requestCheck){
+				chatService.updateValidate(cancelInfo, function(result) {
+					showChatRooms();
+				}, function() {
+					alert("참여 중 이거나 이미 신청한 채팅방입니다.");
+				});
+			}
+		});
+
+		 
 	};
 	showChatRooms();
-	
+	$("#repeat").on("click", function() {
+		showChatRooms();
+	});
 </script>
 <%@include file="../includes/footer.jsp"%>

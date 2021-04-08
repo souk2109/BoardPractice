@@ -96,6 +96,25 @@ var chatService = (function() {
 		});
 	}
 	
+	function updateValidate(validateObj, callback) {
+		$.ajax({
+			type : 'put',
+			url : '/board002/chat/updateValidate',
+			data : JSON.stringify(validateObj),
+			contentType : "application/json; charset=utf-8",
+			success : function(updateResult, status, xhr) {
+				if(callback){
+					callback(updateResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	
 	function displayLongTime(timeValue) {	
 		let dateObj = new Date(timeValue);
 		let yy = dateObj.getFullYear();
@@ -152,6 +171,7 @@ var chatService = (function() {
 		displayShortTime : displayShortTime,
 		updateChatRoom : updateChatRoom,
 		requestJoinRoom : requestJoinRoom,
-		getMyRoomRequest : getMyRoomRequest
+		getMyRoomRequest : getMyRoomRequest,
+		updateValidate : updateValidate
 	};
 })();

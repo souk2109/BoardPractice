@@ -62,7 +62,6 @@ public class ChatRestController {
 	
 	@PostMapping(value = "/request/{chnum}", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
 	public ResponseEntity<String> joinRequest(@RequestBody ChatUserValidateVO userValidateVO) {
-		log.info(userValidateVO);
 		int result = chatService.joinRequest(userValidateVO);
 		return result == 1 ? new ResponseEntity<String>("success", HttpStatus.OK)
 				: new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -73,6 +72,13 @@ public class ChatRestController {
 	public ResponseEntity<List<ChatMyRoomRequestVO>> getMyRoomRequest(@PathVariable("id") String id){
 		List<ChatMyRoomRequestVO> roomRequests = chatService.getMyRoomRequests(id);
 		return new ResponseEntity<List<ChatMyRoomRequestVO>>(roomRequests, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 
+			value = "/updateValidate", consumes = "application/json" , produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> updateValidate(@RequestBody ChatUserValidateVO chatUserValidateVO){
+		chatService.updateRequest(chatUserValidateVO);
+		return new ResponseEntity<String>("", HttpStatus.OK);
 	}
 }
 

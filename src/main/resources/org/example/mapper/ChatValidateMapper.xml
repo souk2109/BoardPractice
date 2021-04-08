@@ -5,7 +5,7 @@
 	<!-- update 나중에 사용하기!  -->
 	<update id="updateValidate">
 		update tbl_chat_validate 
-		set validate = 2 
+		set validate = #{validate}
 		where id = #{id} and chnum = #{chnum}
 	</update>
 	

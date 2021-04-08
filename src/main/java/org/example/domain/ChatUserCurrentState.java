@@ -16,6 +16,7 @@ public class ChatUserCurrentState {
 	private String chnum;
 	private String hostNick;
 	private String roomNick;
+	private int currentNum;
 	private int maxNum;
 	private int validate;
 	private Date regdate;

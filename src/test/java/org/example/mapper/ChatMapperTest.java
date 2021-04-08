@@ -46,11 +46,4 @@ public class ChatMapperTest {
 		log.info(result);
 	}
 	
-	@Test
-	public void getMyRequestTest() {
-		List<ChatMyRoomRequestVO> list = chatRoomMapper.getMyRoomRequests("user2");
-		list.forEach(room -> {
-			log.info(room.getHostid()+", " + room.getUserid());
-			});
-	}
 }

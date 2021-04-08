@@ -14,5 +14,6 @@ public interface ChatService {
 	public int deleteRoom(int chnum);
 	public int updateRoom(ChatRoomVO chatRoomVO);
 	public int joinRequest(ChatUserValidateVO userValidateVO);
+	public int updateRequest(ChatUserValidateVO userValidateVO);
 	public List<ChatMyRoomRequestVO> getMyRoomRequests(String id);
 }
