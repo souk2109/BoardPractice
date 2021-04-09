@@ -157,7 +157,7 @@
 		let chnum;
 		$(".refuse").on("click", function() {
 			chnum = $(this).closest('tr').find('.chnum').text();
-			num = $(this).closest('tr').find('.num').text();
+			let num = $(this).closest('tr').find('.num').text();
 			userId = userIdList[num-1].id;
 			let refuseCheck = confirm("정말 거절하시겠습니까?");
 			if(refuseCheck){
@@ -171,48 +171,29 @@
 		});
 		
 		// 수락 버튼 클릭시
+		// tbl_chat_room 테이블(컬럼은 members?)에 추가, 현재 인원에  +1 추가 
 		$(".accept").on("click", function() {
-			// 기존에 있던 값을 저장
-			let originHostNick = $(this).closest('tr').find('.hostNick').text();
-			let originRoomNick = $(this).closest('tr').find('.roomNick').text();
-			let originMaxNum = $(this).closest('tr').find('.maxNum').text();
-	
-			if($(this).html() == '수정'){
-				$(this).html('완료');
-				$(this).attr('class', 'btn btn-success');
+			chnum = $(this).closest('tr').find('.chnum').text();
+			let num = $(this).closest('tr').find('.num').text();
+			userId = userIdList[num-1].id;
+			let acceptCheck = confirm("승인 하시겠습니까?");
+			if(acceptCheck){
+				let validateObj = {chnum:chnum, id:userId, validate : 4};
+				let userObj = {chnum:chnum, userid:userId};
+				let _valicheck = 0;
+				let _usercheck = 0;
 				
-				// select를 jstl for문으로 수정 [2021/04/06]
-				// jstl if문을 통해서 originMaxNum과 i를 비교해 기존에 있던 값에 selected 속성을 부여하려고 했지만 
-				// 실행 순서가 javascript -> el 순이여서 불가능핟. 나중에 다른 방법이 있을까?
-				$(this).closest('tr').find('.maxNum').html(
-					"<select class='form-control' name='maxNum'>"+
-						"<c:forEach begin='1' end='10' var='i'>"+
-							"<option value='${i }'>${i}명</option>"+
-						"</c:forEach>" +
-					"</select>"
-				);
-				
-				$(this).closest('tr').find('.roomNick').html("<input type='text' value='"+ originRoomNick +"'>");
-			}else{
-				let chnum = $(this).data("chnum");
-				$(this).html('수정');
-				$(this).attr('class', 'btn btn-info');
-				
-				// 수정된 제한 값을 변수에 담음
-				let modMaxNum = $(this).closest('tr').find('select option:selected').val();
-				let modRoomNick = $(this).closest('tr').children('.roomNick').find("input").val();
-				
-				
-				// ajax 요청을 위한 json 객체 생성
-				let chatRoomObj = {chnum:chnum, maxNum:modMaxNum, roomNick:modRoomNick};
-				chatService.updateChatRoom(chatRoomObj, function() {
-					$("#myRooms").html("");
-					showMyRoomList();
-					return;
-				}, function(err) {
-					alert('요청 에러 발생 !');
+				chatService.updateValidate(validateObj, function() {
+					_valicheck = 1;
 				});
-			}		
+				chatService.updateUserid(userObj, function() {
+					_usercheck = 1;
+					if(_valicheck*_usercheck === 1){
+						showMyRequestList();
+						alert('정상적으로 수락하였습니다.');
+					}
+				});
+			}
 		});
 	}
 	

@@ -1,5 +1,6 @@
 var chatService = (function() {
 	
+	// 내가 만든 채팅방 요청
 	function getMyChatRooms(id, callback, error) {
 		$.getJSON("/board002/chat/myChatRoom/" + id +".json", function(data) {
 			if(data){
@@ -11,8 +12,12 @@ var chatService = (function() {
 		});
 		
 	}
-	function getAllChatRooms(callback) {
-		$.getJSON("/board002/chat/allChatRoom.json", function(data) {
+	
+	// 모든 채팅방 요청 
+	// 단 id를 보내서 사용자 별로 다르게 처리해야함 
+	// ex) 로그인한 사용자가 이미 요청한 채팅방이면 '처리 중'으로 표시
+	function getAllChatRooms(id, callback) {
+		$.getJSON("/board002/chat/allChatRoom/" + id + ".json", function(data) {
 			if(data){
 				callback(data);
 			}
@@ -22,6 +27,7 @@ var chatService = (function() {
 		});
 	}
 	
+	// 방장이 채팅방 삭제 요청
 	function deleteChatRoom(chnum, callback, errpr) {
 		$.ajax({
 			type : 'delete',
@@ -39,11 +45,81 @@ var chatService = (function() {
 		});
 	}
 	
+	// 방장이 채팅방 수정 요청
 	function updateChatRoom(chatRoomObj, callback, error) {
 		$.ajax({
 			type : 'put',
 			url : '/board002/chat/update/'+chatRoomObj.chnum,
 			data : JSON.stringify(chatRoomObj),
+			contentType : "application/json; charset=utf-8",
+			success : function(updateResult, status, xhr) {
+				if(callback){
+					callback(updateResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+
+	// 채팅방에 참여신청
+	function requestJoinRoom(requestInfo, callback, error) {
+		$.ajax({
+			type : 'post',
+			url : '/board002/chat/request/'+requestInfo.chnum,
+			data : JSON.stringify(requestInfo),
+			contentType : "application/json; charset=utf-8",
+			success : function(requestResult, status, xhr) {
+				if(callback){
+					callback(requestResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	
+	function getMyRoomRequest(id, callback) {
+		$.getJSON("/board002/chat/getRequests/" + id + ".json", function(data) {
+			if(data){
+				callback(data);
+			}
+		}).fail(function(xhr, status, err) {
+			if(error)
+				error();
+		});
+	}
+	
+	function updateValidate(validateObj, callback) {
+		$.ajax({
+			type : 'put',
+			url : '/board002/chat/updateValidate',
+			data : JSON.stringify(validateObj),
+			contentType : "application/json; charset=utf-8",
+			success : function(updateResult, status, xhr) {
+				if(callback){
+					callback(updateResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	
+	function deleteValidate(validateObj, callback) {
+		$.ajax({
+			type : 'delete',
+			url : '/board002/chat/deleteValidate',
+			data : JSON.stringify(validateObj),
 			contentType : "application/json; charset=utf-8",
 			success : function(updateResult, status, xhr) {
 				if(callback){
@@ -72,7 +148,8 @@ var chatService = (function() {
 		mi = mi < 10 ? '0' + mi : mi;
 		return yy + '년 ' + mm + '월 ' + dd + '일' + hh+'시 '+ mi+'분 ';
 	}
-	
+	 
+	 
 	function displayShortTime(timeValue) {
 		let today = new Date(); // 현재의 시간 (실제 시간)
 		let gap = today.getTime()-timeValue; // 등록일 과의 시간 차(시스템 시간)
@@ -111,6 +188,10 @@ var chatService = (function() {
 		getAllChatRooms : getAllChatRooms,
 		displayLongTime : displayLongTime,
 		displayShortTime : displayShortTime,
-		updateChatRoom : updateChatRoom
+		updateChatRoom : updateChatRoom,
+		requestJoinRoom : requestJoinRoom,
+		getMyRoomRequest : getMyRoomRequest,
+		updateValidate : updateValidate,
+		deleteValidate : deleteValidate
 	};
 })();

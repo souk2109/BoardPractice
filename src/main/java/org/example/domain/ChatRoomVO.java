@@ -10,6 +10,7 @@ import lombok.Data;
 public class ChatRoomVO {
 	private int chnum;
 	private String id;
+	private String userid;
 	private String hostNick;
 	private String roomNick;
 	private int maxNum;

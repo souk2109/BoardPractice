@@ -30,6 +30,7 @@ public class ChatServiceImpl implements ChatService{
 		int chnum = makeRandomNum(); // 방 번호 생성
 		String id = chatRoomVO.getId();
 		chatRoomVO.setChnum(chnum);
+		chatRoomVO.setUserid(id);
 		chatRoomMapper.insert(chatRoomVO);
 		return chatValidateMapper.insertValidate(chnum, id, 2);
 	}
@@ -85,7 +86,27 @@ public class ChatServiceImpl implements ChatService{
 	}
 
 	@Override
-	public int updateRequest(ChatUserValidateVO userValidateVO) {//updateRequest
+	public int updateRequest(ChatUserValidateVO userValidateVO) {
 		return chatValidateMapper.updateValidate(userValidateVO);
+	}
+
+	@Override
+	public int deleteRequest(ChatUserValidateVO chatUserValidateVO) {
+		return chatValidateMapper.deleteValidate(chatUserValidateVO);
+	}
+
+	@Override
+	public int addCurrentNum(int chnum) {
+		return chatRoomMapper.addCurrentNum(chnum);
+	}
+
+	@Override
+	public String getUserId(int chnum) {
+		return chatRoomMapper.getUserId(chnum);
+	}
+
+	@Override
+	public void updateUserId(ChatRoomVO chatRoomVO) {
+		chatRoomMapper.updateUserId(chatRoomVO);
 	}
 }

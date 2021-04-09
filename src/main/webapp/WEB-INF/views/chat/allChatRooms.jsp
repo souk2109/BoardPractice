@@ -4,7 +4,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@include file="../includes/header.jsp"%>
 <sec:authentication property="principal" var="user"/>
-	<h1>모든 채팅방 보기</h1>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">모든 채팅방 보기</h1>
+		</div>
+	</div>
+	 
 	<a href="/board002/chat/makeChat">
 		<button class="btn btn-warning" style="margin-bottom: 30px; margin-top: 30px">방 생성하기
 		</button>
@@ -56,6 +62,8 @@
 					str += "<td><button class='btn request' disabled>거절됨</button>";
 					// 재신청은 해당하는 id와 chnum에  validate를 1로 바꾸면 됨
 					str += "<button class='btn btn-priary warning resend'>재신청</button></td>";
+				}else if(list[i].validate == 4){
+					str += "<td><button class='btn btn-warning disabled'>참여중</button></td>";
 				}
 				str += "<input type='hidden' class='chatNum' value='" + list[i].chnum + "'></input>";
 				str += "</tr>";
@@ -94,10 +102,10 @@
 		
 		$(".cancel").on("click", function() {
 			let chnum = $(this).closest("tr").find(".chatNum").val();
-			let cancelInfo = {id:id, chnum:chnum, validate:0};		
+			let cancelInfo = {id:id, chnum:chnum};		
 			let requestCheck = confirm("취소하시겠습니까?");
 			if(requestCheck){
-				chatService.updateValidate(cancelInfo, function(result) {
+				chatService.deleteValidate(cancelInfo, function(result) {
 					showChatRooms();
 				}, function() {
 					alert("참여 중 이거나 이미 신청한 채팅방입니다.");

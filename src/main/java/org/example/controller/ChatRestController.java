@@ -77,9 +77,32 @@ public class ChatRestController {
 	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 
 			value = "/updateValidate", consumes = "application/json" , produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> updateValidate(@RequestBody ChatUserValidateVO chatUserValidateVO){
-		chatService.updateRequest(chatUserValidateVO);
+		if(chatUserValidateVO.getValidate()==4) {
+			chatService.updateRequest(chatUserValidateVO);
+			chatService.addCurrentNum(chatUserValidateVO.getChnum());
+		}else {
+			chatService.updateRequest(chatUserValidateVO);
+		}
 		return new ResponseEntity<String>("", HttpStatus.OK);
 	}
+	
+	// ChatRoomVO에 userid와 chnum이 있으므로 그냥 이것으로 받음
+	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 
+			value = "/updateUserId", consumes = "application/json" , produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> updateUserId(@RequestBody ChatRoomVO chatRoomVO){
+		chatService.updateUserId(chatRoomVO);
+		log.info(chatRoomVO.getUserid() + "," + chatRoomVO.getChnum());
+		return new ResponseEntity<String>("", HttpStatus.OK);
+	}
+	
+	@DeleteMapping(value = "/deleteValidate", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> deleteValidate(@RequestBody ChatUserValidateVO chatUserValidateVO){
+		int _result = chatService.deleteRequest(chatUserValidateVO);
+		String result = _result == 1 ? "success": "fail"; 
+		return new ResponseEntity<String> (result,HttpStatus.OK);
+	}
+	
+	
 }
 
 

@@ -85,6 +85,7 @@ var chatService = (function() {
 		});
 	}
 	
+	// 자신의 방에 참여 신청한 정보들을 가져옴
 	function getMyRoomRequest(id, callback) {
 		$.getJSON("/board002/chat/getRequests/" + id + ".json", function(data) {
 			if(data){
@@ -96,12 +97,54 @@ var chatService = (function() {
 		});
 	}
 	
+	// 사용자의 채팅방에 대한 validate를 갱신함
 	function updateValidate(validateObj, callback) {
 		$.ajax({
 			type : 'put',
 			url : '/board002/chat/updateValidate',
 			data : JSON.stringify(validateObj),
+			async: false,
 			contentType : "application/json; charset=utf-8",
+			success : function(updateResult, status, xhr) {
+				if(callback){
+					callback(updateResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	// 사용자의 채팅방에 대한 validate를 삭제함 
+	function deleteValidate(validateObj, callback) {
+		$.ajax({
+			type : 'delete',
+			url : '/board002/chat/deleteValidate',
+			data : JSON.stringify(validateObj),
+			contentType : "application/json; charset=utf-8",
+			success : function(updateResult, status, xhr) {
+				if(callback){
+					callback(updateResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	// tbl_chat_room의 userid를 갱신함 (방장이 허용했을 때 사용자의 id를 추가해줘야함)
+	// chnum인 방에 id를 추가할 것이므로 chnum과 id를 보내면 됨 
+	function updateUserid(userObj, callback) {
+		$.ajax({
+			type : 'put',
+			url : '/board002/chat/updateUserId',
+			data : JSON.stringify(userObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
 			success : function(updateResult, status, xhr) {
 				if(callback){
 					callback(updateResult);
@@ -172,6 +215,8 @@ var chatService = (function() {
 		updateChatRoom : updateChatRoom,
 		requestJoinRoom : requestJoinRoom,
 		getMyRoomRequest : getMyRoomRequest,
-		updateValidate : updateValidate
+		updateValidate : updateValidate,
+		deleteValidate : deleteValidate,
+		updateUserid : updateUserid
 	};
 })();

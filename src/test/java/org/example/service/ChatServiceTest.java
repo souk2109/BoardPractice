@@ -27,30 +27,25 @@ public class ChatServiceTest {
 	 * chatService.makeChatRoom(chatRoomVO); log.info("결과는 : "+result); }
 	 */
 	
-	@Test
-	public void getListTest() {
-		List<ChatRoomVO> list = chatService.getMyList("user2");
-		list.forEach(room -> {
-			log.info(room);
-		});
-	}
-	@Test
-	public void updateValidateTest() {
-		ChatRoomVO chatRoomVO = new ChatRoomVO();
-		chatRoomVO.setId("user3");
-		chatRoomVO.setHostNick("연습이용");
-		chatRoomVO.setRoomNick("연습용");
-		chatRoomVO.setMaxNum(10);
-		chatService.makeChatRoom(chatRoomVO);
-	}
-	@Test
-	public void getMyRoomRequestTest() {
-		List<ChatMyRoomRequestVO> list = chatService.getMyRoomRequests("user2");
-		list.forEach(room -> {
-			log.info(room);
-		});
-	}
 	
+	  @Test public void getListTest() { List<ChatRoomVO> list =
+	  chatService.getMyList("user2"); list.forEach(room -> { log.info(room); }); }
+	/*
+	 * @Test public void updateValidateTest() { ChatRoomVO chatRoomVO = new
+	 * ChatRoomVO(); chatRoomVO.setId("user3"); chatRoomVO.setHostNick("연습이용");
+	 * chatRoomVO.setRoomNick("연습용"); chatRoomVO.setMaxNum(10);
+	 * chatService.makeChatRoom(chatRoomVO); }
+	 * 
+	 * @Test public void getMyRoomRequestTest() { List<ChatMyRoomRequestVO> list =
+	 * chatService.getMyRoomRequests("user2"); list.forEach(room -> {
+	 * log.info(room); }); }
+	 */
+	 
+	  @Test
+	  public void userIdTest() {
+		  String result = chatService.getUserId(6817);
+		  System.out.println(result);
+	  }
 
 	 
 }

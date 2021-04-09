@@ -54,6 +54,8 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 		String rawMessage = message.getPayload(); // json형태의 메세지
 		msgObj = jsonMapper.readValue(rawMessage, ChatMessage.class); // json형식의 문자를 특정 클래스로 캐스팅(? 담아준다)
 		
+		
+		
 		// 일반 전송한 경우
 		if (msgObj.getAction() == ChatAction.SEND) {
 			log.info("[일반 전송] " + msgObj.getChnum() + "방에 " + msgObj.getSender() + "가 [" + msgObj.getMessage() + "]를 전송함");

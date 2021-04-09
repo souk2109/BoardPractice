@@ -32,9 +32,8 @@
 	<script type="text/javascript">
 		const userNick = '<c:out value="${user.nickname }"/>';
 	 	const userId = '<c:out value="${user.username}"/>';
-		function connect() {
-			var was = new WebSocket("ws://localhost:8080/board002/socket/chatSocket");
-			socket = was;
+	 	 
+	 	function connect() {
 			socket.onopen = function() {
 				console.log('info: connection opened!');
 				socket.onmessage = function(event) {
@@ -52,8 +51,7 @@
 							$("#msgBox").append("<div class='alert alert-info' style='text-align:right'>나 :" + originMessage + "</div>");
 						}else{
 							$("#msgBox").append("<div class='alert alert-warning'>"+ messageSender + ": " + originMessage + "</div>");
-						}
-						 
+						}						 
 					} else {
 						socket.close();
 						console.log("커넥션 닫음");
@@ -102,7 +100,6 @@
 	
 	<script type="text/javascript">
 			$("document").ready(function() {
-				var socket = null;
 				connect();
 				window.onbeforeunload = function() {//브라우저 종료 및 닫기 감지
 					socket.close();

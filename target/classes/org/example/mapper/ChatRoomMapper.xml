@@ -3,8 +3,8 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.mapper.ChatRoomMapper">
 	<insert id="insert">
-		insert into tbl_chat_room(chnum, id, hostNick, roomNick, maxNum, content) 
-		values(#{chnum}, #{id}, #{hostNick}, #{roomNick},#{maxNum},#{content})
+		insert into tbl_chat_room(chnum, id, userid, hostNick, roomNick, maxNum, content) 
+		values(#{chnum}, #{id}, #{userid}, #{hostNick}, #{roomNick},#{maxNum},#{content})
 	</insert>
 	
 	<select id="pkCheck" resultType="int">
@@ -49,5 +49,21 @@
 		on va.chnum = ro.chnum
 		where validate = 1;
 	</select>
+	
+	<update id="addCurrentNum">
+		update tbl_chat_room 
+		set currentNum = currentNum + 1 
+		where chnum = #{chnum};
+	</update>
+	
+	<select id="getUserId" resultType="String">
+		select userid from tbl_chat_room where chnum = #{chnum}
+	</select>
+	
+	<update id="updateUserId">
+		update tbl_chat_room 
+		set userid = concat(userid,'|', #{userid})
+		where chnum = #{chnum}
+	</update>
 	
 </mapper>

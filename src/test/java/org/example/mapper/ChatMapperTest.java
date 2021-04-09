@@ -41,9 +41,8 @@ public class ChatMapperTest {
 	}
 	
 	@Test
-	public void updateTest() {
-		int result = chatValidateMapper.updateValidate(23, "user3");
-		log.info(result);
+	public void getUserId() {
+		String list = chatRoomMapper.getUserId(2248);
+		System.out.println(list);
 	}
-	
 }
