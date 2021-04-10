@@ -158,6 +158,17 @@ var chatService = (function() {
 		});
 	}
 	
+	function getChatMessageByChnum(chnum, callback) {
+		$.getJSON("/board002/chat/getMessage/" + chnum + ".json", function(data) {
+			if(data){
+				callback(data);
+			}
+		}).fail(function(xhr, status, err) {
+			if(error)
+				error();
+		});
+	}
+	
 	function displayLongTime(timeValue) {	
 		let dateObj = new Date(timeValue);
 		let yy = dateObj.getFullYear();
@@ -217,6 +228,7 @@ var chatService = (function() {
 		getMyRoomRequest : getMyRoomRequest,
 		updateValidate : updateValidate,
 		deleteValidate : deleteValidate,
-		updateUserid : updateUserid
+		updateUserid : updateUserid,
+		getChatMessageByChnum : getChatMessageByChnum
 	};
 })();

@@ -18,13 +18,7 @@
 	<div class="col-xs-4 col-sm-4" style="height: 500px; border: 2px solid green;" id="chat-title">
 	</div>
 	<div class="col-xs-8 col-sm-8" style="height: 500px; border: 2px solid green;">
-		<div style="height: 90%; overflow: auto;">
-			<div class='alert alert-info' style='text-align:right'>나 블라블라</div>
-			<div class='alert alert-warning'>너 블라블라</div>
-			<div class='alert alert-info' style='text-align:right'>나 블라블라</div>
-			<div class='alert alert-warning'>너 블라블라</div>
-			<div class='alert alert-info' style='text-align:right'>나 블라블라</div>
-			<div class='alert alert-warning'>너 블라블라</div>
+		<div style="height: 90%; overflow: auto;" id="chat-content">
 		</div>
 		<div style="height: 10%">
 			<span>${user.username }</span> <input type="text" id="msg" autofocus="autofocus" autocomplete="false">
@@ -42,13 +36,34 @@
 			let str = '';
 			for(var i=0; i<list.length; i++){
 				if(list[i].validate == 2 || list[i].validate == 4){
-					str += "<div class='alert alert-warning'>" + list[i].roomNick +"( "+list[i].currentNum +"/" + list[i].maxNum + ")</div>";
+					str += "<div class='alert alert-warning chat-title' style='cursor:pointer' data-chnum=" + list[i].chnum + ">" + list[i].roomNick +"( "+list[i].currentNum +"/" + list[i].maxNum + ")</div>";
 				}
 			}
 			$("#chat-title").append(str);
+			 clickTitle();
 		});
 	}
 	getChatroomTitles();
+	
+	function clickTitle() {
+		// 특정 채팅방 제목을 클릭했을 때 
+		$(".chat-title").on("click", function() {
+			let chnum = $(this).data("chnum");
+			// 그에 해당하는 대화목록을 받아옴
+			chatService.getChatMessageByChnum(chnum, function(list) {
+				$("#chat-content").html('');
+				let str = '';
+				for(var i=0; i<list.length; i++){
+					if(list[i].id == id){
+						str += "<div class='alert alert-info' style='text-align:right'>나 : " + list[i].message + "</div>";
+					}else{
+						str += "<div class='alert alert-info' style='text-align:left'>" + list[i].sender +" : "+ list[i].message + "</div>";
+					}
+				}
+				$("#chat-content").append(str);
+			});
+		});	
+	}
 </script>
 
 <%@include file="../includes/footer.jsp"%>

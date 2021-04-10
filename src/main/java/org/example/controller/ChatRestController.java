@@ -2,11 +2,13 @@ package org.example.controller;
 
 import java.util.List;
 
+import org.example.domain.ChatMessageVO;
 import org.example.domain.ChatMyRoomRequestVO;
 import org.example.domain.ChatRoomVO;
 import org.example.domain.ChatUserCurrentState;
 import org.example.domain.ChatUserValidateVO;
 import org.example.domain.ReplyVO;
+import org.example.service.ChatMessageService;
 import org.example.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,9 @@ import lombok.extern.log4j.Log4j;
 public class ChatRestController {
 	@Autowired
 	private ChatService chatService;
+	
+	@Autowired
+	private ChatMessageService chatMessageService; 
 	
 	// json형식으로 리스트 데이터를 전송
 	@GetMapping(value = "/myChatRoom/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
@@ -102,6 +107,12 @@ public class ChatRestController {
 		return new ResponseEntity<String> (result,HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/getMessage/{chnum}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<ChatMessageVO>> getMyRoomRequest(@PathVariable("chnum") int chnum){
+		List<ChatMessageVO> messageList = chatMessageService.getAllChatMessage(chnum);
+		return new ResponseEntity<List<ChatMessageVO>>(messageList, HttpStatus.OK);
+	}
 	
 }
 
