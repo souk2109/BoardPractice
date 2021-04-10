@@ -305,7 +305,13 @@
 								<i class="fa fa-table fa-fw"></i> 채팅방 리스트
 							</a>
 						</li>
+						<li>
+							<a href="/board002/chat/attendingRooms">
+								<i class="fa fa-table fa-fw"></i> 참여중인 채팅방
+							</a>
+						</li>
                     </ul>
+                    
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>

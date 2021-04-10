@@ -28,7 +28,6 @@
 			</tbody>
 		</table>
 	</div>
- 
 <script type="text/javascript" src="/board002/resources/js/chat.js"></script>
 
 <script type="text/javascript">
@@ -63,7 +62,8 @@
 					// 재신청은 해당하는 id와 chnum에  validate를 1로 바꾸면 됨
 					str += "<button class='btn btn-priary warning resend'>재신청</button></td>";
 				}else if(list[i].validate == 4){
-					str += "<td><button class='btn btn-warning disabled'>참여중</button></td>";
+					str += "<td><button class='btn btn-warning disabled'>참여중</button>";
+					str += "<button class='btn btn-success join'>참여하기</button></td>";
 				}
 				str += "<input type='hidden' class='chatNum' value='" + list[i].chnum + "'></input>";
 				str += "</tr>";
@@ -112,10 +112,16 @@
 				});
 			}
 		});
-
+		
+		$(".join").on("click", function() {
+			let chnum = $(this).closest("tr").find(".chatNum").val();
+			window.open("/board002/chat/chat?chnum="+chnum,"win0","width=300,height=500,status=no,toolbar=no, location=no");
+		});
 		 
 	};
+	
 	showChatRooms();
+	
 	$("#repeat").on("click", function() {
 		showChatRooms();
 	});

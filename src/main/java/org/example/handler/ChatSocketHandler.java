@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.example.domain.ChatAction;
-import org.example.domain.ChatMessage;
+import org.example.domain.ChatMessageVO;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -25,7 +25,7 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 	HashMap<String, WebSocketSession> socketSessions = new LinkedHashMap<String, WebSocketSession>();
 	 
 	ObjectMapper jsonMapper = new ObjectMapper();
-	ChatMessage msgObj = new ChatMessage();
+	ChatMessageVO msgObj = new ChatMessageVO();
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -52,7 +52,7 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String sender = getUserId(session); // 메세지를 보낸사람
 		String rawMessage = message.getPayload(); // json형태의 메세지
-		msgObj = jsonMapper.readValue(rawMessage, ChatMessage.class); // json형식의 문자를 특정 클래스로 캐스팅(? 담아준다)
+		msgObj = jsonMapper.readValue(rawMessage, ChatMessageVO.class); // json형식의 문자를 특정 클래스로 캐스팅(? 담아준다)
 		
 		
 		

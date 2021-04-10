@@ -1,7 +1,5 @@
 package org.example.controller;
-
-import java.util.List;
-
+ 
 import org.example.domain.ChatRoomVO;
 import org.example.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +46,7 @@ public class ChatController {
 	// db로부터 chnum의 id를  받아옴 
 	// chat?1321 과 같은 방식
 	@GetMapping("/chat")
-	public void ChatRoom(@RequestParam("chnum") int chnum, Model model) {
+	public void chatRoom(@RequestParam("chnum") int chnum, Model model) {
 		// 1. 서비스로 getUserId(chnum)으로 모든 사용자 id를 가져와서 model에 담아 보냄, db에는 id|id|이런 식으로 저장!
 		// 2. 뷰에서 받아서 split후 현재 로그인한 사용자 id와 비교 
 		// 3. 일치하는 사용자가 있으면 채팅방을 보여줌
@@ -56,5 +54,9 @@ public class ChatController {
 		String userId = chatService.getUserId(chnum);
 		model.addAttribute("userId", userId);
 	}
+	@GetMapping("/attendingRooms")
+	public void attendingRooms() {
+
+	} 
 	
 }
