@@ -21,5 +21,6 @@ public interface ChatService {
 	public int deleteRequest(ChatUserValidateVO chatUserValidateVO);
 	public int addCurrentNum(int chnum);
 	public void updateUserId(ChatRoomVO chatRoomVO);
+	public int requestApproval(ChatUserValidateVO chatUserValidateVO);
 	 
 }

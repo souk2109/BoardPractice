@@ -8,6 +8,7 @@ import org.example.domain.ChatRoomVO;
 import org.example.domain.ChatUserCurrentState;
 import org.example.domain.ChatUserValidateVO;
 import org.example.domain.ReplyVO;
+import org.example.mapper.ChatValidateMapper;
 import org.example.service.ChatMessageService;
 import org.example.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,15 +80,20 @@ public class ChatRestController {
 		return new ResponseEntity<List<ChatMyRoomRequestVO>>(roomRequests, HttpStatus.OK);
 	}
 	
+	// 채팅방 입장 요청 거절 시 
 	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 
 			value = "/updateValidate", consumes = "application/json" , produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> updateValidate(@RequestBody ChatUserValidateVO chatUserValidateVO){
-		if(chatUserValidateVO.getValidate()==4) {
-			chatService.updateRequest(chatUserValidateVO);
-			chatService.addCurrentNum(chatUserValidateVO.getChnum());
-		}else {
-			chatService.updateRequest(chatUserValidateVO);
-		}
+		chatService.updateRequest(chatUserValidateVO);
+		return new ResponseEntity<String>("", HttpStatus.OK);
+	}
+	
+	// 채팅방 입장 요청 수락 시
+	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 
+			value = "/requestApproval", consumes = "application/json" , produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> requestApproval(@RequestBody ChatUserValidateVO chatUserValidateVO){
+		chatService.requestApproval(chatUserValidateVO);
+		chatService.addCurrentNum(chatUserValidateVO.getChnum());
 		return new ResponseEntity<String>("", HttpStatus.OK);
 	}
 	
@@ -107,23 +113,12 @@ public class ChatRestController {
 		return new ResponseEntity<String> (result,HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/getMessage/{chnum}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
-			MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<List<ChatMessageVO>> getMyRoomRequest(@PathVariable("chnum") int chnum){
-		List<ChatMessageVO> messageList = chatMessageService.getAllChatMessage(chnum);
+	// id에 해당하는 사용자의 입장일로부터 시작된 대화를 불러와야한다. 그래서 id와 chnum을 받아왔다.
+	@GetMapping(value = "/getMessage/{chnum}/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<ChatMessageVO>> getMyRoomRequest(@PathVariable("chnum") int chnum, @PathVariable("id") String id){
+		// 특정 채팅방의 대화 목록을 가져옴
+		List<ChatMessageVO> messageList = chatMessageService.getAllChatMessage(id, chnum);
 		return new ResponseEntity<List<ChatMessageVO>>(messageList, HttpStatus.OK);
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-

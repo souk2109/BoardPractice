@@ -3,12 +3,18 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.mapper.ChatMessageMapper">
 	<select id="getAllChatMessage" resultType="org.example.domain.ChatMessageVO">
-		select * from tbl_chat_message where chnum =#{chnum}
+		<![CDATA[
+			select * 
+			from tbl_chat_message 
+			where chnum =#{chnum} and sendDate >= date_format(#{approvalDate},'%Y-%m-%d %H:%i:%s')
+		]]>
 	</select>	
+	
 	<insert id="insertChatMessage">
 		 insert into tbl_chat_message(chnum, sender, id, message) 
 		 values(#{chnum}, #{sender}, #{id}, #{message});
 	</insert>
+	
 	<delete id="deleteChatMessageById">
 		delete from tbl_chat_message where id=#{id}
 	</delete>

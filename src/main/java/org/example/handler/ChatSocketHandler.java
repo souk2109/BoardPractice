@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.example.domain.ChatAction;
 import org.example.domain.ChatMessageVO;
+import org.example.service.ChatMessageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -21,11 +23,11 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class ChatSocketHandler extends TextWebSocketHandler{
 	// 중복된 키(사용자 id)인 경우 덮어씌운다. 그리고 들어온 순서대로 값을 저장하기 위해서 LinkedHashMap을 사용했다.
-
 	HashMap<String, WebSocketSession> socketSessions = new LinkedHashMap<String, WebSocketSession>();
-	 
-	ObjectMapper jsonMapper = new ObjectMapper();
-	ChatMessageVO msgObj = new ChatMessageVO();
+	@Autowired
+	private ChatMessageService chatMessageService;
+	private ObjectMapper jsonMapper = new ObjectMapper();
+	private ChatMessageVO msgObj = new ChatMessageVO();
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -53,8 +55,9 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 		String sender = getUserId(session); // 메세지를 보낸사람
 		String rawMessage = message.getPayload(); // json형태의 메세지
 		msgObj = jsonMapper.readValue(rawMessage, ChatMessageVO.class); // json형식의 문자를 특정 클래스로 캐스팅(? 담아준다)
-		// log.info("obj : "+msgObj);
 		
+		// 메세지를 db(tbl_chat_message)에 저장함
+		chatMessageService.insertChatMessage(msgObj);
 		
 		// 일반 전송한 경우
 		if (msgObj.getAction() == ChatAction.SEND) {
@@ -87,7 +90,7 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		socketSessions.remove(getUserId(session));
 		log.info("새로고침 후 변경된 소켓 세션 목록 : " + socketSessions); 
-		// System.out.println("채팅창 닫은사람: "+ msgObj.getSender()+" 상태: " + status);
+		System.out.println("채팅창 닫은사람: "+ msgObj.getSender()+" 상태: " + status);
 	}
 	
 	// 웹소켓 세션으로부터 사용자의 id를 받아옴

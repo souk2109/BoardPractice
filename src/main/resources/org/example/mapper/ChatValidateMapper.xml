@@ -10,10 +10,20 @@
 	</update>
 	
 	<insert id="insertValidate">
-		insert into tbl_chat_validate(chnum, id, validate) values(#{chnum}, #{id}, #{validate})
+		insert into tbl_chat_validate(chnum, id, validate, approvaldate) values(#{chnum}, #{id}, #{validate}, current_time())
 	</insert>
 	
 	<delete id="deleteValidate">
 		delete from tbl_chat_validate where id = #{id} and chnum = #{chnum}
 	</delete>
+	
+	<update id="requestApproval">
+		update tbl_chat_validate 
+		set validate = #{validate}, updatedate = current_timestamp, approvaldate = current_timestamp
+		where id = #{id} and chnum = #{chnum}
+	</update>
+	
+	<select id="getApprovalDate" resultType="java.util.Date">
+		select approvaldate from tbl_chat_validate where id=#{id} and chnum = #{chnum};
+	</select>
 </mapper>

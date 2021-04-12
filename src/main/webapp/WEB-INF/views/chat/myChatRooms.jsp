@@ -182,8 +182,8 @@
 				let userObj = {chnum:chnum, userid:userId};
 				let _valicheck = 0;
 				let _usercheck = 0;
-				
-				chatService.updateValidate(validateObj, function() {
+				// 요청 수락시 
+				chatService.requestApproval(validateObj, function() {
 					_valicheck = 1;
 				});
 				chatService.updateUserid(userObj, function() {

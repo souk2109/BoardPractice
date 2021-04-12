@@ -109,4 +109,9 @@ public class ChatServiceImpl implements ChatService{
 	public void updateUserId(ChatRoomVO chatRoomVO) {
 		chatRoomMapper.updateUserId(chatRoomVO);
 	}
+
+	@Override
+	public int requestApproval(ChatUserValidateVO chatUserValidateVO) {
+		return chatValidateMapper.requestApproval(chatUserValidateVO);
+	}
 }

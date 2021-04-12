@@ -73,6 +73,7 @@
 		.bigPicture img{
 			width: 600px;
 		}
+		 
 	</style>
 </head>
 

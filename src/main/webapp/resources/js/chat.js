@@ -117,6 +117,26 @@ var chatService = (function() {
 			}
 		});
 	}
+	function requestApproval(validateObj, callback) {
+		$.ajax({
+			type : 'put',
+			url : '/board002/chat/requestApproval',
+			data : JSON.stringify(validateObj),
+			async: false,
+			contentType : "application/json; charset=utf-8",
+			success : function(updateResult, status, xhr) {
+				if(callback){
+					callback(updateResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	
 	// 사용자의 채팅방에 대한 validate를 삭제함 
 	function deleteValidate(validateObj, callback) {
 		$.ajax({
@@ -158,8 +178,31 @@ var chatService = (function() {
 		});
 	}
 	
-	function getChatMessageByChnum(chnum, callback) {
-		$.getJSON("/board002/chat/getMessage/" + chnum + ".json", function(data) {
+	
+	
+	/*function getChatMessage(userObj, callback) {
+		$.ajax({
+			type : 'post',
+			url : "/board002/chat/getMessage",
+			data : JSON.stringify(userObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+			dataType : "json",
+			success : function(getResult, status, xhr) {
+				if(callback){
+					callback(getResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		})
+	}*/
+	
+	function getChatMessage(userObj, callback) {
+		$.getJSON("/board002/chat/getMessage/" + userObj.chnum + "/"+ userObj.id + ".json", function(data) {
 			if(data){
 				callback(data);
 			}
@@ -168,6 +211,12 @@ var chatService = (function() {
 				error();
 		});
 	}
+	
+	 
+	
+	
+	
+	
 	
 	function displayLongTime(timeValue) {	
 		let dateObj = new Date(timeValue);
@@ -229,6 +278,7 @@ var chatService = (function() {
 		updateValidate : updateValidate,
 		deleteValidate : deleteValidate,
 		updateUserid : updateUserid,
-		getChatMessageByChnum : getChatMessageByChnum
+		getChatMessage : getChatMessage,
+		requestApproval:requestApproval
 	};
 })();
