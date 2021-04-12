@@ -30,7 +30,6 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String userId = getUserId(session);
-
 		/*
 		 * 이 부분에서 채팅방에 처음 들어온 사용자인 경우에만 id를 키로 하는 현재의 세션을 저장하려고 했는데 에러가 발생했다. 이유는 새로고침 할
 		 * 때나 재접속시 webSocketSession이 바뀌기 때문이다. 그래서 처음 들어온 경우에는 해당id로 세션을 생성해주면 되고, 기존에
@@ -44,6 +43,7 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 			log.info("처음 들어온 id: " + userId);
 		}
 		socketSessions.put(userId, session);
+		log.info(socketSessions);
 	}
 	
 	// 메세지를 받는 역할읗 한다. 
@@ -53,12 +53,12 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 		String sender = getUserId(session); // 메세지를 보낸사람
 		String rawMessage = message.getPayload(); // json형태의 메세지
 		msgObj = jsonMapper.readValue(rawMessage, ChatMessageVO.class); // json형식의 문자를 특정 클래스로 캐스팅(? 담아준다)
-		
+		// log.info("obj : "+msgObj);
 		
 		
 		// 일반 전송한 경우
 		if (msgObj.getAction() == ChatAction.SEND) {
-			log.info("[일반 전송] " + msgObj.getChnum() + "방에 " + msgObj.getSender() + "가 [" + msgObj.getMessage() + "]를 전송함");
+			// log.info("[일반 전송] " + msgObj.getChnum() + "방에 " + msgObj.getSender() + "가 [" + msgObj.getMessage() + "]를 전송함");
 		}
 		
 		// 채팅방 퇴장한 경우
@@ -67,23 +67,27 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 			log.info(sender + "와의 연결이 끊김!");
 			log.info("[퇴장전송] " + msgObj.getChnum() + "방에" + msgObj.getSender() + "가 나갔음" + msgObj.getMessage() + "]");
 		}
-
-		// 받은 메세지를 모든 사용자들에게 전송
-				socketSessions.forEach((userId, sess)->{
-					try {
-						// jsp페이지에 보낼 메세지
-						String passToJspMessage = sender +"|"+msgObj.getMessage();
-						sess.sendMessage(new TextMessage(passToJspMessage));
-						log.info("--------------------> " +getUserId(sess) + "에게  [" + passToJspMessage + "] 전달함");
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				});
+		
+		log.info("모두에게 전송하기 전 세션 리스트 : "+socketSessions);
+		// 받은 메세지를 모든 사용자들에게 전송(여기서 특정한 채널에 전송을 해야함)
+		socketSessions.forEach((userId, sess)->{
+			try {
+				// jsp페이지에 보낼 메세지
+				String passToJspMessage = msgObj.getChnum()+"|"+ msgObj.getSender() +"|"+msgObj.getMessage()+"|"+msgObj.getId();
+				sess.sendMessage(new TextMessage(passToJspMessage));
+				log.info("--------------------> " +getUserId(sess) + "에게  [" + passToJspMessage + "] 전달함");
+				} catch (IOException e) {
+					log.info("전송 에러!");
+					e.printStackTrace();
+			}
+		});
 	}
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		System.out.println("채팅창 닫은사람: "+ msgObj.getSender()+" 상태: " + status);
+		socketSessions.remove(getUserId(session));
+		log.info("새로고침 후 변경된 소켓 세션 목록 : " + socketSessions); 
+		// System.out.println("채팅창 닫은사람: "+ msgObj.getSender()+" 상태: " + status);
 	}
 	
 	// 웹소켓 세션으로부터 사용자의 id를 받아옴

@@ -19,8 +19,6 @@ public class LogAdvice {
 	@Before("execution(* org.example.service.*.*(..))")
 	public void test() {
 		log.info("□■□■□■□■□■□■□■□■□■□■□■□■□");
-		log.info("vevvvvvvvvvv");
-		log.info("□■□■□■□■□■□■□■□■□■□■□■□■□");
 	}
 
 	@Before("within(org.example.service.BoardService*)")

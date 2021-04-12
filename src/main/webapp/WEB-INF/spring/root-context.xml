@@ -45,4 +45,5 @@
 		base-package="org.example.aop" />
 
 	<tx:annotation-driven />
+	 
 </beans>
