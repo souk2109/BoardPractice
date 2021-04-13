@@ -52,11 +52,20 @@ public class ChatRestController {
 		return new ResponseEntity<List<ChatUserCurrentState>>(allRoomList, HttpStatus.OK);
 	}
 	
+	// 채팅방 삭제
 	@DeleteMapping(value = "/delete/{chnum}", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> deleteRoom(@PathVariable("chnum") int chnum){
 		int _result = chatService.deleteRoom(chnum);
 		String result = _result == 1 ? "success": "fail"; 
 		return new ResponseEntity<String> (result,HttpStatus.OK);
+	}
+
+	// 채팅방 status를 0으로 변경
+	@RequestMapping(method = {RequestMethod.PUT,RequestMethod.PATCH},value = "/unable/{chnum}", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> unableRoom(@PathVariable("chnum") int chnum) {
+		int _result = chatService.unableRoom(chnum);
+		String result = _result == 1 ? "success" : "fail";
+		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
 	
 	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 
@@ -93,7 +102,6 @@ public class ChatRestController {
 			value = "/requestApproval", consumes = "application/json" , produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> requestApproval(@RequestBody ChatUserValidateVO chatUserValidateVO){
 		chatService.requestApproval(chatUserValidateVO);
-		chatService.addCurrentNum(chatUserValidateVO.getChnum());
 		return new ResponseEntity<String>("", HttpStatus.OK);
 	}
 	
@@ -109,7 +117,7 @@ public class ChatRestController {
 	@DeleteMapping(value = "/deleteValidate", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> deleteValidate(@RequestBody ChatUserValidateVO chatUserValidateVO){
 		int _result = chatService.deleteRequest(chatUserValidateVO);
-		String result = _result == 1 ? "success": "fail"; 
+		String result = _result == 0 ? "fail" : "success";
 		return new ResponseEntity<String> (result,HttpStatus.OK);
 	}
 	

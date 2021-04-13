@@ -45,6 +45,23 @@ var chatService = (function() {
 		});
 	}
 	
+	function unableChatRoom(chnum, callback, error) {
+		$.ajax({
+			type : 'put',
+			url : '/board002/chat/unable/'+chnum,
+			success : function(unableResult, status, xhr) {
+				if(callback){
+					callback(unableResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error();
+				}
+			}
+		});
+	}
+	
 	// 방장이 채팅방 수정 요청
 	function updateChatRoom(chatRoomObj, callback, error) {
 		$.ajax({
@@ -144,9 +161,9 @@ var chatService = (function() {
 			url : '/board002/chat/deleteValidate',
 			data : JSON.stringify(validateObj),
 			contentType : "application/json; charset=utf-8",
-			success : function(updateResult, status, xhr) {
+			success : function(deleteResult, status, xhr) {
 				if(callback){
-					callback(updateResult);
+					callback(deleteResult);
 				}
 			},
 			error : function(xhr, status, err) {
@@ -180,27 +197,6 @@ var chatService = (function() {
 	
 	
 	
-	/*function getChatMessage(userObj, callback) {
-		$.ajax({
-			type : 'post',
-			url : "/board002/chat/getMessage",
-			data : JSON.stringify(userObj),
-			contentType : "application/json; charset=utf-8",
-			async: false,
-			dataType : "json",
-			success : function(getResult, status, xhr) {
-				if(callback){
-					callback(getResult);
-				}
-			},
-			error : function(xhr, status, err) {
-				if(error){
-					error(err);
-				}
-			}
-		})
-	}*/
-	
 	function getChatMessage(userObj, callback) {
 		$.getJSON("/board002/chat/getMessage/" + userObj.chnum + "/"+ userObj.id + ".json", function(data) {
 			if(data){
@@ -211,11 +207,6 @@ var chatService = (function() {
 				error();
 		});
 	}
-	
-	 
-	
-	
-	
 	
 	
 	function displayLongTime(timeValue) {	
@@ -266,12 +257,35 @@ var chatService = (function() {
 			return  yy + '.' + mm +'.' +dd;
 		}
 	}
+	// 20.
+	function messageTime(timeValue) {
+		let today = new Date();
+		let dateObj = new Date(timeValue);
+		let yy = dateObj.getFullYear().toString().substring(2, 4);
+		let mm = dateObj.getMonth()+1;
+		let dd = dateObj.getDate();
+		let hh = dateObj.getHours();
+		let mi = dateObj.getMinutes();
+
+		
+		date = dateObj.getDate() === today.getDate() ? '오늘 ' : mm + '월  '+ dd+'일';
+		if(hh>12){
+			hh = '오후 ' + (hh-12);
+		}else if(hh<12){
+			hh = '오전 ' + (hh);
+		}else{
+			hh = '오후 12시';
+		}
+		return '('+date + hh +'시' + mi +'분) ';
+	}
 	return {
 		getMyChatRooms : getMyChatRooms,
 		deleteChatRoom : deleteChatRoom, 
+		unableChatRoom : unableChatRoom,
 		getAllChatRooms : getAllChatRooms,
 		displayLongTime : displayLongTime,
 		displayShortTime : displayShortTime,
+		messageTime : messageTime,
 		updateChatRoom : updateChatRoom,
 		requestJoinRoom : requestJoinRoom,
 		getMyRoomRequest : getMyRoomRequest,
@@ -279,6 +293,6 @@ var chatService = (function() {
 		deleteValidate : deleteValidate,
 		updateUserid : updateUserid,
 		getChatMessage : getChatMessage,
-		requestApproval:requestApproval
+		requestApproval : requestApproval
 	};
 })();

@@ -19,7 +19,7 @@
 	</select>
 	
 	<select id="getAllList" resultType="org.example.domain.ChatUserCurrentState">
-		select t1.chnum, t1.currentNum, t1.hostNick, t1.roomNick, t1.maxNum,  IFNULL(t2.validate, 0) validate, t1.regdate regdate, t2.requestdate requestdate, t2.updatedate updatedate
+		select t1.id hostId, t1.status status, t1.chnum, t1.currentNum, t1.hostNick, t1.roomNick, t1.maxNum,  IFNULL(t2.validate, 0) validate, t1.regdate regdate, t2.requestdate requestdate, t2.updatedate updatedate
 		from tbl_chat_room t1
 		left join (select * from tbl_chat_validate where id= #{id}) t2
 		on t1.chnum = t2.chnum order by regdate desc;
@@ -28,6 +28,12 @@
 	<delete id="delete">
 		delete from tbl_chat_room where chnum = #{chnum}
 	</delete>
+	
+	<update id="unable">
+		update tbl_chat_room 
+		set status = '0', updatedate = current_timestamp()
+		where chnum = #{chnum}
+	</update>
 	
 	<update id="update">
 		update tbl_chat_room 
@@ -43,16 +49,26 @@
 
 	<!-- 내가 생성한 방에 신청한 요청들을 조회함  -->
 	<select id="getMyRoomRequests" resultType="org.example.domain.ChatMyRoomRequestVO">
-		select va.id userid, ro.roomnick roomnick, ro.chnum chnum, va.validate validate, va.requestdate requestdate
+		select va.id userid, ro.roomnick roomnick, ro.chnum chnum, va.validate validate, va.requestdate requestdate, ro.status status
 		from tbl_chat_validate va
 		right join (select * from tbl_chat_room where id=#{id}) ro
 		on va.chnum = ro.chnum
 		where validate = 1;
 	</select>
 	
+	<select id="getCurrentNum" resultType="int">
+		select currentNum from tbl_chat_room where chnum = #{chnum};
+	</select>
+	
 	<update id="addCurrentNum">
 		update tbl_chat_room 
 		set currentNum = currentNum + 1 
+		where chnum = #{chnum};
+	</update>
+	
+	<update id="minusCurrentNum">
+		update tbl_chat_room 
+		set currentNum = currentNum - 1 
 		where chnum = #{chnum};
 	</update>
 	

@@ -12,4 +12,5 @@ public class ChatMyRoomRequestVO {
 	private int chnum;
 	private int validate;
 	private Date requestdate;
+	private boolean status;
 }

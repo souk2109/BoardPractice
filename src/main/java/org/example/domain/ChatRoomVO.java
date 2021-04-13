@@ -17,4 +17,5 @@ public class ChatRoomVO {
 	private String content;
 	private Date regDate;
 	private Date updateDate;
+	private boolean status;
 }

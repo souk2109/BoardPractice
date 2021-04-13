@@ -39,34 +39,36 @@
 		
 		// host id도 같이 받아서 신청할 때 db에 넣어주기
 		chatService.getAllChatRooms(id, function(list) {
+			console.log(list);
 			$("#myRooms").html('');
 			let str = '';
 			for(var i=0; i<list.length; i++){
-				str += "<tr>";
-				str += "<td>" + (i+1) + "</td>";
-				str += "<td>" + list[i].hostNick + "</td>";
-				str += "<td class='roomNick'>" + list[i].roomNick + "</td>";
-				str += "<td class='maxNum'>"+ list[i].currentNum +"/" + list[i].maxNum + "</td>";
-				str += "<td>" + chatService.displayShortTime(list[i].regdate) + "</td>";
-				
-				if(list[i].validate == 0){
-					str += "<td><button class='btn btn-success request'>신청</button></td>";
+				if(list[i].status){
+					str += "<tr>";
+					str += "<td>" + (i+1) + "</td>";
+					str += "<td>" + list[i].hostNick + "</td>";
+					str += "<td class='roomNick'>" + list[i].roomNick + "</td>";
+					str += "<td class='maxNum'>"+ list[i].currentNum +"/" + list[i].maxNum + "</td>";
+					str += "<td>" + chatService.displayShortTime(list[i].regdate) + "</td>";
+					
+					if(list[i].validate == 0){
+						str += "<td><button class='btn btn-success request'>신청</button></td>";
+					}
+					else if(list[i].validate == 1){
+						str += "<td><button class='btn btn-priary request' disabled>처리중</button>";
+						str += "<button class='btn btn-warning cancel'>취소</button></td>";
+					}else if(list[i].validate == 2){
+						str += "<td><button class='btn request' disabled>내방</button></td>";
+					}else if(list[i].validate == 3){
+						str += "<td><button class='btn request' disabled>거절됨</button>";
+						// 재신청은 해당하는 id와 chnum에  validate를 1로 바꾸면 됨
+						str += "<button class='btn btn-priary warning resend'>재신청</button></td>";
+					}else if(list[i].validate == 4){
+						str += "<td><button class='btn btn-warning disabled'>참여중</button>";
+					}
+					str += "<input type='hidden' class='chatNum' value='" + list[i].chnum + "'></input>";
+					str += "</tr>";
 				}
-				else if(list[i].validate == 1){
-					str += "<td><button class='btn btn-priary request' disabled>처리중</button>";
-					str += "<button class='btn btn-warning cancel'>취소</button></td>";
-				}else if(list[i].validate == 2){
-					str += "<td><button class='btn request' disabled>내방</button></td>";
-				}else if(list[i].validate == 3){
-					str += "<td><button class='btn request' disabled>거절됨</button>";
-					// 재신청은 해당하는 id와 chnum에  validate를 1로 바꾸면 됨
-					str += "<button class='btn btn-priary warning resend'>재신청</button></td>";
-				}else if(list[i].validate == 4){
-					str += "<td><button class='btn btn-warning disabled'>참여중</button>";
-					str += "<button class='btn btn-success join'>참여하기</button></td>";
-				}
-				str += "<input type='hidden' class='chatNum' value='" + list[i].chnum + "'></input>";
-				str += "</tr>";
 			}
 			$("#myRooms").append(str);
 			btnService();
@@ -112,11 +114,11 @@
 				});
 			}
 		});
-		
+		/* 
 		$(".join").on("click", function() {
 			let chnum = $(this).closest("tr").find(".chatNum").val();
 			window.open("/board002/chat/chat?chnum="+chnum,"win0","width=300,height=500,status=no,toolbar=no, location=no");
-		});
+		}); */
 		 
 	};
 	

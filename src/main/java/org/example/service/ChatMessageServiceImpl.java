@@ -26,9 +26,7 @@ public class ChatMessageServiceImpl implements ChatMessageService{
 	@Override
 	public List<ChatMessageVO> getAllChatMessage(String id, int chnum) {
 		Date _approvalDate = chatValidateMapper.getApprovalDate(chnum, id);
-		log.info("_approvalDate : " + _approvalDate);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-		log.info("날짜 : " + format);
 		String approvalDate = format.format(_approvalDate);
 		return chatMessageMapper.getAllChatMessage(chnum, approvalDate);
 	}

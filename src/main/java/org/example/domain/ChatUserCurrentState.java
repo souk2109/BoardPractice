@@ -13,9 +13,11 @@ import lombok.Data;
 */
 @Data
 public class ChatUserCurrentState {
+	private String hostId;
 	private String chnum;
 	private String hostNick;
 	private String roomNick;
+	private boolean status;
 	private int currentNum;
 	private int maxNum;
 	private int validate;

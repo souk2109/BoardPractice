@@ -34,14 +34,16 @@
 	const id = '<c:out value='${user.username}'/>'; // 사용자의 id
 	const sender = '<c:out value='${user.nickname }'/>'; // 사용자의 닉네임
 	let currentChnum = null; // 현재 보고있는 채팅의 채널 번호
-	
+	let currentHostId = null; // 현재 보고있는 채팅방의 방장id
 	function getChatroomTitles() {
 		chatService.getAllChatRooms(id, function(list) {
+			console.log(list);
 			$("#chat-title").html('');
 			let str = '';
 			for(var i=0; i<list.length; i++){
+				// 방장이거나 참여중인 사람이거나
 				if(list[i].validate == 2 || list[i].validate == 4){
-					str += "<div class='text-center alert alert-warning chat-title' style='cursor:pointer' data-chnum=" + list[i].chnum + ">" + list[i].roomNick +"( "+list[i].currentNum +"/" + list[i].maxNum + ")</div>";
+					str += "<div class='text-center alert alert-warning chat-title' style='cursor:pointer' data-hostid="+list[i].hostId+" data-chnum=" + list[i].chnum + ">" + list[i].roomNick +"( "+list[i].currentNum +"/" + list[i].maxNum + ")</div>";
 				}
 			}
 			$("#chat-title").append(str);
@@ -57,16 +59,19 @@
 			$(this).attr('class', 'alert alert-success chat-title');
 			
 			currentChnum = $(this).data("chnum");
+			currentHostId = $(this).data("hostid");
+			
 			userObj = {id:id, chnum:currentChnum};
 			// id와 chnum을 넘겨서 받아와야한다.(id는 채팅방에 접속한 날짜를 얻어내기 위해서 사용)
 			chatService.getChatMessage(userObj, function(list) {
+				console.log(list);
 				$("#chat-content").html('');
 				let str = '';
 				for(var i=0; i<list.length; i++){
 					if(list[i].id == id){
-						str += "<div class='alert alert-info' style='text-align:right'>나 : " + list[i].message + "</div>";
+						str += "<div class='alert alert-info' style='text-align:right'>나 : " + list[i].message + "<div style='color:#8bafc1'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
 					}else{
-						str += "<div class='alert alert-warning' style='text-align:left'>" + list[i].sender +" : "+ list[i].message + "</div>";
+						str += "<div class='alert alert-warning' style='text-align:left'>" + list[i].sender +" : "+ list[i].message + "<div style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
 					}
 				}
 				$("#chat-content").append(str);
@@ -95,14 +100,14 @@
 					messageSender = messageArr[1];
 					message = messageArr[2];
 					messageId = messageArr[3];
-					
+					sendDate = new Date();
 					console.log(chnum + "채널, 아이디: "+messageId + messageSender + " : [" + message + "]");
 					console.log("보낸사람의 채널: "+chnum + ", 현재 보고있는 채널: "+currentChnum);
 					if(parseInt(chnum) === currentChnum){
 						if(id === messageId){
-							$("#chat-content").append("<div class='alert alert-info' style='text-align:right'>나 :" + message + "</div>");
+							$("#chat-content").append("<div class='alert alert-info' style='text-align:right'>나 :" + message + "<div style='color:#8bafc1'>"+ chatService.messageTime(sendDate) + "</div></div>");
 						}else{
-							$("#chat-content").append("<div class='alert alert-warning'>"+ messageSender + ": " + message + "</div>");
+							$("#chat-content").append("<div class='alert alert-warning'>"+ messageSender + ": " + message +"<div style='color:#b9b189'>" + chatService.messageTime(sendDate) + "</div></div>");
 						}
 						scrolldown();
 					}
@@ -134,13 +139,34 @@
 	});
 	
 	
-	// 채팅방을 나갈 시 db에서 삭제한다.(글은 유지하며 참여 인원에서 제외)
+	// 채팅방을 나갈 시 db에서 삭제한다.(글은 유지하며 참여 인원에서 제외) ok [2021/04/13] 
 	$("#outbtn").on("click", function(e) {
 		let result = confirm('정말 방을 나가시겠습니까?');
 		if(result){
-			send(JSON.stringify({message: userId + '님이 퇴장하셨습니다.', sender:sender, id : id, chnum : chnum, action : 'OUT'}));	
-			window.location.href = '/board002/board/list';
-		}else{
+			// 방 주인이 나가는 경우
+			if(currentHostId === id){
+				chatService.unableChatRoom(currentChnum, function(result) {
+					// 채팅방에서 대화를 못하게 한다.
+					send(JSON.stringify({message: '방장님이 퇴장하셨습니다.', sender:sender, id : id, chnum : currentChnum, action : 'OUT'}));
+					console.log("방장이 퇴장");
+				}, function() {
+					console.log("에러로 퇴장하지 못했습니다..");
+				});
+			}
+			// 일반 사용자가 나가는 경우
+			else{
+				send(JSON.stringify({message: id + '님이 퇴장하셨습니다.', sender:sender, id : id, chnum : currentChnum, action : 'OUT'}));
+			}
+			let outObj = {id:id, chnum: currentChnum};
+			chatService.deleteValidate(outObj, function(result) {
+				if(result === "success"){
+					window.location.href = '/board002/chat/attendingRooms';
+				}
+			}, function() {
+				alert("에러로 퇴장하지 못했습니다..");
+			});
+		}
+		else{
 			return;
 		}
 		 

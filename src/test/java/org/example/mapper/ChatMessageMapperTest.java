@@ -26,17 +26,14 @@ public class ChatMessageMapperTest {
 	@Autowired
 	private ChatValidateMapper chatValidateMapper;
 	
-	@Autowired
-	private ChatMessageMapper chatMessageMapper;
 	
 	
 	@Test
 	public void test() {
-		Date apD = chatValidateMapper.getApprovalDate(8084,"user3");
+		Date Jdate = chatValidateMapper.getApprovalDate(321,"user3");
+		System.out.println(Jdate);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-		String approvalDate = format.format(apD);
-		System.out.println(approvalDate);
-		int chnum = 8084; 
-		chatMessageMapper.getAllChatMessage(chnum, approvalDate);
+		String mysqlDate = format.format(Jdate);
+		System.out.println(mysqlDate); 
 	}
 }

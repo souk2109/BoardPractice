@@ -41,22 +41,23 @@
 	const id = '<c:out value='${user.username}'/>';
 	// ajax 통신으로 생성한 방의 목록을 받아옴
 	function showMyRoomList() {
-		/* TODO : 나중에 ajax통신 async로 바꿔보기!  */
 		chatService.getMyChatRooms(id, function(list) {
 			$("#myRooms").html('');
 			let str = '';
 			// 받은 목록을 화면에 띄움
 			for(var i=0; i<list.length; i++){
-				str += "<tr>";
-				str += "<td>" + (i+1) + "</td>";
-				str += "<td class='maxChNum'>" + list[i].chnum + "</td>";
-				str += "<td class='hostNick'>" + list[i].hostNick + "</td>";
-				str += "<td class='roomNick'>" + list[i].roomNick + "</td>";
-				str += "<td class='maxNum'>" + list[i].maxNum + "명</td>";
-				str += "<td>" + chatService.displayLongTime(list[i].regDate) + "</td>";
-				str += "<td><button data-chnum=" + list[i].chnum + " class='btn btn-info modBtn'>수정</button></td>";
-				str += "<td><button data-chnum="+ list[i].chnum + " class='btn btn-info delBtn'>삭제</button></td>";
-				str += "</tr>";
+				if(list[i].status){
+					str += "<tr>";
+					str += "<td>" + (i+1) + "</td>";
+					str += "<td class='chnum'>" + list[i].chnum + "</td>";
+					str += "<td class='hostNick'>" + list[i].hostNick + "</td>";
+					str += "<td class='roomNick'>" + list[i].roomNick + "</td>";
+					str += "<td class='maxNum'>" + list[i].maxNum + "명</td>";
+					str += "<td>" + chatService.displayLongTime(list[i].regDate) + "</td>";
+					str += "<td><button data-chnum=" + list[i].chnum + " class='btn btn-info modBtn'>수정</button></td>";
+					str += "<td><button data-chnum="+ list[i].chnum + " class='btn btn-info delBtn'>삭제</button></td>";
+					str += "</tr>";
+				}
 			}
 			$("#myRooms").append(str);
 			roomListBtnService();
@@ -65,8 +66,8 @@
 	// 내가 만든 채팅방에 요청한 목록을 가져옴
 	function showMyRequestList() {
 		chatService.getMyRoomRequest(id, function(list) {
-			$("#myRequests").html('');
 			console.log(list);
+			$("#myRequests").html('');
 			let userIdList=[]; // 사용자의 id를 배열로 담음
 			let str = '';
 			// 받은 목록을 화면에 띄움
@@ -95,7 +96,8 @@
 			let chnum = $(this).data("chnum");
 			let delCheck = confirm("정말 삭제하시겠습니까?\n(주의 : 해당방에 요청한 정보는 모두 삭제됩니다.)");
 			if(delCheck){
-				chatService.deleteChatRoom(chnum, function(result) {
+				// 방 삭제시 status를 0으로 바꿔준다.(삭제해버리면 기존의 채팅창이 모두 삭제됨) 
+				chatService.unableChatRoom(chnum, function(result) {
 					showMyRoomList();
 					showMyRequestList(); // 방 삭제 시 해당 방에 대한 요청도 삭제됐으므로 요청 리스트도 함께 갱신
 					console.log("삭제 여부 : "+result);
