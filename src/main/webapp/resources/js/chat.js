@@ -114,6 +114,17 @@ var chatService = (function() {
 		});
 	}
 	
+	function getNicknameById(id, callback) {
+		$.getJSON("/board002/chat/getNicknameById/" + id + ".json", function(nickname) {
+			if(nickname){
+				callback(nickname);
+			}
+		}).fail(function(xhr, status, err) {
+			if(error)
+				error();
+		});
+	}
+	
 	// 사용자의 채팅방에 대한 validate를 갱신함
 	function updateValidate(validateObj, callback) {
 		$.ajax({
@@ -231,6 +242,7 @@ var chatService = (function() {
 	}
 	
 	
+	
 	function displayLongTime(timeValue) {	
 		let dateObj = new Date(timeValue);
 		let yy = dateObj.getFullYear();
@@ -316,6 +328,7 @@ var chatService = (function() {
 		updateUserid : updateUserid,
 		getChatMessage : getChatMessage,
 		requestApproval : requestApproval,
-		outRoomRequest : outRoomRequest
+		outRoomRequest : outRoomRequest,
+		getNicknameById : getNicknameById
 	};
 })();

@@ -89,6 +89,13 @@ public class ChatRestController {
 		return new ResponseEntity<List<ChatMyRoomRequestVO>>(roomRequests, HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/getNicknameById/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<String> getNicknameById(@PathVariable("id") String id){
+		String nickname = chatService.getNicknameById(id);
+		return new ResponseEntity<String>(nickname, HttpStatus.OK);
+	}
+	
 	// 채팅방 입장 요청 거절 시 
 	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 
 			value = "/updateValidate", consumes = "application/json" , produces = MediaType.TEXT_PLAIN_VALUE)
@@ -101,8 +108,12 @@ public class ChatRestController {
 	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 
 			value = "/requestApproval", consumes = "application/json" , produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> requestApproval(@RequestBody ChatUserValidateVO chatUserValidateVO){
-		chatService.requestApproval(chatUserValidateVO);
-		return new ResponseEntity<String>("", HttpStatus.OK);
+		int _result = chatService.requestApproval(chatUserValidateVO);
+		String result = "fail";
+		if(_result == 1) {
+			result = "success";
+		}
+		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
 	
 	// ChatRoomVO에 userid와 chnum이 있으므로 그냥 이것으로 받음
@@ -118,10 +129,10 @@ public class ChatRestController {
 	public ResponseEntity<String> deleteValidate(@RequestBody ChatUserValidateVO chatUserValidateVO){
 		int _result = chatService.deleteRequest(chatUserValidateVO);
 		String result = null;
-		if(_result == 2) {
-			result = "fail"; // 이미 승인된 요청
-		}else if(_result == 1) {
+		if(_result == 1) {
 			result = "success";
+		}else if(_result == 2) {
+			result = "fail"; // 이미 승인된 요청
 		}else {
 			result = "error";
 		}

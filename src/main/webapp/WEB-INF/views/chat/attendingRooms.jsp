@@ -43,7 +43,7 @@
 			for(var i=0; i<list.length; i++){
 				// 방장이거나 참여중인 사람이거나
 				if(list[i].validate == 2 || list[i].validate == 4){
-					str += "<div class='text-center alert alert-warning chat-title' style='cursor:pointer' data-hostid="+list[i].hostId+" data-chnum=" + list[i].chnum + ">" + list[i].roomNick +"( "+list[i].currentNum +"/" + list[i].maxNum + ")</div>";
+					str += "<div class='text-center alert alert-warning chat-title' style='cursor:pointer' data-hostid="+list[i].hostId+" data-chnum=" + list[i].chnum + ">" + list[i].roomNick+"</div>";
 				}
 			}
 			$("#chat-title").append(str);
@@ -55,8 +55,8 @@
 		// 특정 채팅방 제목을 클릭했을 때 채널 번호를 바꾼 후 해당 데이터를 가져옴
 		$(".chat-title").on("click", function() {
 			$("#chat-service").show(); // 채팅방 제목을 클릭했을 때 메세지를 작성하고 전송하는 view를 보여줌
-			$(".chat-title").attr('class', 'alert alert-warning chat-title');
-			$(this).attr('class', 'alert alert-success chat-title');
+			$(".chat-title").attr('class', 'text-center alert alert-warning chat-title');
+			$(this).attr('class', 'text-center alert alert-success chat-title');
 			
 			currentChnum = $(this).data("chnum");
 			currentHostId = $(this).data("hostid");

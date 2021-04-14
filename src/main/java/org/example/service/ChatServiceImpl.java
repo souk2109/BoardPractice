@@ -2,16 +2,19 @@ package org.example.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+ 
 import org.example.domain.ChatMyRoomRequestVO;
 import org.example.domain.ChatRoomVO;
 import org.example.domain.ChatUserCurrentState;
 import org.example.domain.ChatUserValidateVO;
+import org.example.domain.UserVO;
 import org.example.mapper.ChatRoomMapper;
 import org.example.mapper.ChatValidateMapper;
+import org.example.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+ 
 
 import lombok.extern.log4j.Log4j;
 
@@ -24,6 +27,9 @@ public class ChatServiceImpl implements ChatService{
 	
 	@Autowired
 	private ChatValidateMapper chatValidateMapper;
+	
+	@Autowired
+	private UserMapper userMapper;
 	
 	@Transactional
 	@Override
@@ -123,7 +129,6 @@ public class ChatServiceImpl implements ChatService{
 	public int deleteRequest(ChatUserValidateVO chatUserValidateVO) {
 		// 해당 유저의 validate를 가져옴
 		int validate = chatValidateMapper.getValidate(chatUserValidateVO.getChnum(), chatUserValidateVO.getId());
-		log.info("getValidate : "+validate);
 		// 이미 참여중인 경우
 		if(validate == 4) {
 			return 2;
@@ -155,10 +160,30 @@ public class ChatServiceImpl implements ChatService{
 		chatRoomMapper.updateUserId(chatRoomVO);
 	}
 
+	// 채팅방 참여 요청에 승인하는 메소드
+	// 1.승인을 할 때 신청자가 요청을 철회했는지 체크
+	// 2. 철회하지 않았다면 db에 등록 후 숫자를 1증가
 	@Transactional
 	@Override
 	public int requestApproval(ChatUserValidateVO chatUserValidateVO) {
-		chatRoomMapper.addCurrentNum(chatUserValidateVO.getChnum());
-		return chatValidateMapper.requestApproval(chatUserValidateVO);
+		log.info("들어온것: "+chatUserValidateVO);
+		try {
+			Integer validate = chatValidateMapper.getValidate(chatUserValidateVO.getChnum(), chatUserValidateVO.getId());
+			if(validate == 1) {
+				chatRoomMapper.addCurrentNum(chatUserValidateVO.getChnum());
+				return chatValidateMapper.requestApproval(chatUserValidateVO);
+			}
+			return 2;
+		} catch (NullPointerException e) {
+			log.info("요청이 없습니다.(NPE에러 발생)");
+			return 2;
+		}
+		 
+	}
+
+	@Override
+	public String getNicknameById(String id) {
+		UserVO userVO = userMapper.getUser(id);
+		return userVO.getNickname();
 	}
 }

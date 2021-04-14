@@ -3,8 +3,8 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.mapper.ChatValidateMapper">
 	
-	<select id="getValidate" resultType="int">
-		select validate from tbl_chat_validate where chnum = #{chnum} and id = #{id}
+	<select id="getValidate" resultType="integer">
+		select IFNULL(validate, 0) from tbl_chat_validate where chnum = #{chnum} and id = #{id}
 	</select>
 	<update id="updateValidate">
 		update tbl_chat_validate 

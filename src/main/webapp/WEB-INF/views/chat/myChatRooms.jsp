@@ -7,6 +7,7 @@
 	<div>
 		<h1>내가 만든 채팅방 보기</h1>
 		<a href="/board002/chat/makeChat"><button class="btn btn-warning" style="margin-bottom: 30px; margin-top: 30px">방 생성하기</button></a>
+		<button id="repeat" class="btn btn-primary glyphicon glyphicon-repeat" aria-hidden="true" style="margin-bottom: 30px; margin-top: 30px"></button>
 		<!-- 반응형 테이블 생성  -->
 		<div class="table-responsive">
 			<table class="table table-bordered table-hover"  style="text-align: center;">
@@ -41,8 +42,9 @@
 	const id = '<c:out value='${user.username}'/>';
 	// ajax 통신으로 생성한 방의 목록을 받아옴
 	function showMyRoomList() {
+		$("#myRooms").html('');
 		chatService.getMyChatRooms(id, function(list) {
-			$("#myRooms").html('');
+			console.log(list);
 			let str = '';
 			// 받은 목록을 화면에 띄움
 			for(var i=0; i<list.length; i++){
@@ -173,6 +175,7 @@
 		// 거절 버튼 클릭시 (id와 chnum을 보내서 db에 validate를 2로 변경, updatedate도 갱신)
 		let userId;
 		let chnum;
+		let userNickname;
 		$(".refuse").on("click", function() {
 			chnum = $(this).closest('tr').find('.chnum').text();
 			let num = $(this).closest('tr').find('.num').text();
@@ -197,27 +200,39 @@
 			let acceptCheck = confirm("승인 하시겠습니까?");
 			if(acceptCheck){
 				let validateObj = {chnum:chnum, id:userId, validate : 4};
-				let userObj = {chnum:chnum, userid:userId};
-				let _valicheck = 0;
-				let _usercheck = 0;
+				
 				// 요청 수락시 
-				chatService.requestApproval(validateObj, function() {
-					_valicheck = 1;
+				chatService.requestApproval(validateObj, function(result) {
+					if(result == "success"){
+						chatService.getNicknameById(userId, function(nickname) {
+							userNickname = nickname;
+						})
+						showMyRequestList();
+						send(JSON.stringify({message: userNickname + '님이 입장하셨습니다.', sender:userId, id : userId, chnum : chnum, action : 'JOIN'}));
+						alert('정상적으로 수락하였습니다.');	
+					}else{
+						showMyRequestList();
+						alert('취소된 요청입니다.');
+					}
+					
 				});
-				chatService.updateUserid(userObj, function() {
+				/* chatService.updateUserid(userObj, function() {
 					_usercheck = 1;
 					if(_valicheck*_usercheck === 1){
-						showMyRequestList();
-						send(JSON.stringify({message: userId + '님이 입장하셨습니다.', sender:userId, id : userId, chnum : chnum, action : 'JOIN'}));
-						alert('정상적으로 수락하였습니다.');
+						
 					}
-				});
+				}); */
 			}
 		});
 	}
 	
 	showMyRoomList();
 	showMyRequestList();
+	
+	$("#repeat").on("click", function() {
+		showMyRoomList();
+		showMyRequestList();
+	});
 </script>
 <script type="text/javascript">
 	function connect() {
