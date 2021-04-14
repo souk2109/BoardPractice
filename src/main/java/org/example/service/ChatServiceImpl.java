@@ -117,13 +117,22 @@ public class ChatServiceImpl implements ChatService{
 		return chatValidateMapper.updateValidate(userValidateVO);
 	}
 
-	// 순수하게 요청을 삭제한다.
+	// 순수하게 요청을 삭제한다.(1반환)
+	// 이미 참여중인 경우에는 삭제를 못하게 한다(2반환).
 	@Override
 	public int deleteRequest(ChatUserValidateVO chatUserValidateVO) {
-		return chatValidateMapper.deleteValidate(chatUserValidateVO);
+		// 해당 유저의 validate를 가져옴
+		int validate = chatValidateMapper.getValidate(chatUserValidateVO.getChnum(), chatUserValidateVO.getId());
+		log.info("getValidate : "+validate);
+		// 이미 참여중인 경우
+		if(validate == 4) {
+			return 2;
+		}else {
+			return chatValidateMapper.deleteValidate(chatUserValidateVO);	
+		}
 	}
 	
-	// 방을 나갔을 때 인원 수를 1줄이고 0인경우 방을 삭제한다.
+	// 방을 나갔을 때 인원 수를 1줄이고 인원수가 0인경우 방을 삭제한다. 0이 아니라면 validate만 삭제한다.
 	@Transactional
 	@Override
 	public int outRoomRequest(ChatUserValidateVO chatUserValidateVO) {
@@ -134,7 +143,7 @@ public class ChatServiceImpl implements ChatService{
 			log.info(chnum + "방, 삭제 완료");
 			return 2;
 		}
-		return 1;
+		return chatValidateMapper.deleteValidate(chatUserValidateVO);
 	}
 	@Override
 	public String getUserId(int chnum) {

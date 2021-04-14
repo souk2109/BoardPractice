@@ -42,10 +42,11 @@
 			console.log(list);
 			$("#myRooms").html('');
 			let str = '';
+			let index = 0;
 			for(var i=0; i<list.length; i++){
 				if(list[i].status){
 					str += "<tr>";
-					str += "<td>" + (i+1) + "</td>";
+					str += "<td>" + (++index) + "</td>";
 					str += "<td>" + list[i].hostNick + "</td>";
 					str += "<td class='roomNick'>" + list[i].roomNick + "</td>";
 					str += "<td class='maxNum'>"+ list[i].currentNum +"/" + list[i].maxNum + "</td>";
@@ -101,13 +102,16 @@
 				});
 			}
 		});
-		
+		// 만약 이미 입장된 방이면 취소가 안되고(경고문) 새로고침 실행해야함.
 		$(".cancel").on("click", function() {
 			let chnum = $(this).closest("tr").find(".chatNum").val();
 			let cancelInfo = {id:id, chnum:chnum};		
 			let requestCheck = confirm("취소하시겠습니까?");
 			if(requestCheck){
 				chatService.deleteValidate(cancelInfo, function(result) {
+					if(result === 'fail'){
+						alert('이미 승인된 상태이므로 요청 할 수 없습니다.');
+					}
 					showChatRooms();
 				}, function() {
 					alert("참여 중 이거나 이미 신청한 채팅방입니다.");

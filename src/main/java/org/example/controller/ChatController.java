@@ -40,7 +40,7 @@ public class ChatController {
 		ChatMessageVO chatMessageVO = new ChatMessageVO();
 		chatMessageVO.setId(chatRoomVO.getId());
 		chatMessageVO.setSender(chatRoomVO.getHostNick());
-		chatMessageVO.setMessage("입장하였습니다.");
+		chatMessageVO.setMessage("방을 생성하였습니다.");
 		chatMessageVO.setChnum(chnum);
 		chatMessageVO.setAction(ChatAction.JOIN);
 		int insertResult = chatMessageService.insertChatMessage(chatMessageVO);

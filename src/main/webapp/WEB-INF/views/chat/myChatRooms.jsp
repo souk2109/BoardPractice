@@ -107,7 +107,7 @@
 				let outObj = {id:id, chnum: chnum};
 				let outResult = null;
 		
-				
+				// 방장이 방을 삭제했을 경우 채팅방에도 나갔다고 표시해주기!, 방장의 채팅방 리스트에서도 해당 채팅방은 안나오게 변경해야함
 				chatService.outRoomRequest(outObj, function(deleteResult) {
 					outResult = deleteResult;
 					// 정상적으로 validate를 변경했거나, 참여 인원수가 0명이라서 방이 삭제된 경우.
@@ -208,6 +208,7 @@
 					_usercheck = 1;
 					if(_valicheck*_usercheck === 1){
 						showMyRequestList();
+						send(JSON.stringify({message: userId + '님이 입장하셨습니다.', sender:userId, id : userId, chnum : chnum, action : 'JOIN'}));
 						alert('정상적으로 수락하였습니다.');
 					}
 				});
@@ -217,5 +218,30 @@
 	
 	showMyRoomList();
 	showMyRequestList();
+</script>
+<script type="text/javascript">
+	function connect() {
+		socket.onopen = function() {
+			console.log('info: connection opened!');
+			socket.onclose = function(event) {
+				console.log("Info : connection closed");
+				setTimeout(function() {
+					connect();
+				}, 1000);
+			}
+			socket.onerror = function(err) {
+				console.log("Error : connection error");
+			}
+		}
+	};
+	
+	connect();
+	function send(message) {
+		if (!socket) {
+			console.log("error! 소켓이 없음!");
+			return;
+		}
+		socket.send(message);
+	};
 </script>
 <%@include file="../includes/footer.jsp"%>

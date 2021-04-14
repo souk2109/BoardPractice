@@ -117,7 +117,14 @@ public class ChatRestController {
 	@DeleteMapping(value = "/deleteValidate", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> deleteValidate(@RequestBody ChatUserValidateVO chatUserValidateVO){
 		int _result = chatService.deleteRequest(chatUserValidateVO);
-		String result = _result == 1 ? "success":"fail";
+		String result = null;
+		if(_result == 2) {
+			result = "fail"; // 이미 승인된 요청
+		}else if(_result == 1) {
+			result = "success";
+		}else {
+			result = "error";
+		}
 		return new ResponseEntity<String> (result,HttpStatus.OK);
 	}
 	
