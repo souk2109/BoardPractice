@@ -161,6 +161,7 @@ var chatService = (function() {
 			url : '/board002/chat/deleteValidate',
 			data : JSON.stringify(validateObj),
 			contentType : "application/json; charset=utf-8",
+			async: false,
 			success : function(deleteResult, status, xhr) {
 				if(callback){
 					callback(deleteResult);
@@ -173,6 +174,27 @@ var chatService = (function() {
 			}
 		});
 	}
+	
+	function outRoomRequest(validateObj, callback) {
+		$.ajax({
+			type : 'delete',
+			url : '/board002/chat/outRoomRequest',
+			data : JSON.stringify(validateObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+			success : function(deleteResult, status, xhr) {
+				if(callback){
+					callback(deleteResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	
 	// tbl_chat_room의 userid를 갱신함 (방장이 허용했을 때 사용자의 id를 추가해줘야함)
 	// chnum인 방에 id를 추가할 것이므로 chnum과 id를 보내면 됨 
 	function updateUserid(userObj, callback) {
@@ -293,6 +315,7 @@ var chatService = (function() {
 		deleteValidate : deleteValidate,
 		updateUserid : updateUserid,
 		getChatMessage : getChatMessage,
-		requestApproval : requestApproval
+		requestApproval : requestApproval,
+		outRoomRequest : outRoomRequest
 	};
 })();

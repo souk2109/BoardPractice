@@ -11,8 +11,8 @@
 	</select>	
 	
 	<insert id="insertChatMessage">
-		 insert into tbl_chat_message(chnum, sender, id, message) 
-		 values(#{chnum}, #{sender}, #{id}, #{message});
+		 insert into tbl_chat_message(chnum, sender, id, message, action) 
+		 values(#{chnum}, #{sender}, #{id}, #{message}, #{action});
 	</insert>
 	
 	<delete id="deleteChatMessageById">

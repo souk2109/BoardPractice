@@ -33,7 +33,8 @@ public class ChatServiceImpl implements ChatService{
 		chatRoomVO.setChnum(chnum);
 		chatRoomVO.setUserid(id);
 		chatRoomMapper.insert(chatRoomVO);
-		return chatValidateMapper.insertValidate(chnum, id, 2);
+		chatValidateMapper.insertValidate(chnum, id, 2);
+		return chnum;
 	}
 
 	// 채팅방 번호를 random하게 만들어주는데 중복되는 경우 중복안되는 번호를 생성해서 부여함
@@ -116,19 +117,25 @@ public class ChatServiceImpl implements ChatService{
 		return chatValidateMapper.updateValidate(userValidateVO);
 	}
 
-	@Transactional
+	// 순수하게 요청을 삭제한다.
 	@Override
 	public int deleteRequest(ChatUserValidateVO chatUserValidateVO) {
+		return chatValidateMapper.deleteValidate(chatUserValidateVO);
+	}
+	
+	// 방을 나갔을 때 인원 수를 1줄이고 0인경우 방을 삭제한다.
+	@Transactional
+	@Override
+	public int outRoomRequest(ChatUserValidateVO chatUserValidateVO) {
 		int chnum = chatUserValidateVO.getChnum();
 		chatRoomMapper.minusCurrentNum(chnum);
 		if(chatRoomMapper.getCurrentNum(chnum)==0) {
 			chatRoomMapper.delete(chnum);
 			log.info(chnum + "방, 삭제 완료");
-			return 1;
+			return 2;
 		}
-		return chatValidateMapper.deleteValidate(chatUserValidateVO);
+		return 1;
 	}
-
 	@Override
 	public String getUserId(int chnum) {
 		return chatRoomMapper.getUserId(chnum);

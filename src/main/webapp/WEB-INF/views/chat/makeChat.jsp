@@ -70,17 +70,6 @@
 			e.preventDefault();
 		}else{
 			mkchatForm.submit();
-			/* let str = "";
-			str +="<li>";
-			str +=	"<a href='#'>";
-			str +=		"<div>";
-			str +=			"<strong>dd</strong>";
-			str +=			"<span class='pull-right text-muted'><em>Yesterday</em></span>";
-			str +=		"</div>";
-			str +=		"<div>message</div>";
-			str +=	"</a>";
-			str +="</li>";
-			$("#chatting-room").html(str); */
 		}
 		
 	});

@@ -61,29 +61,37 @@ public class ChatSocketHandler extends TextWebSocketHandler{
 		
 		// 일반 전송한 경우
 		if (msgObj.getAction() == ChatAction.SEND) {
-			// log.info("[일반 전송] " + msgObj.getChnum() + "방에 " + msgObj.getSender() + "가 [" + msgObj.getMessage() + "]를 전송함");
+			// 받은 메세지를 모든 사용자들에게 전송(여기서 특정한 채널에 전송을 해야함)
+			socketSessions.forEach((userId, sess)->{
+				try {
+					// jsp페이지에 보낼 메세지
+					String passToJspMessage = msgObj.getChnum()+"|"+ msgObj.getSender() +"|"+msgObj.getMessage()+"|"+msgObj.getId()+"|"+msgObj.getAction();
+					sess.sendMessage(new TextMessage(passToJspMessage));
+					log.info("--------------------> " +getUserId(sess) + "에게  [" + passToJspMessage + "] 전달함");
+					} catch (IOException e) {
+						log.info("전송 에러!");
+						e.printStackTrace();
+				}
+			});
 		}
 		
 		// 채팅방 퇴장한 경우
 		else if (msgObj.getAction() == ChatAction.OUT) {
 			socketSessions.remove(sender);
-			log.info(sender + "와의 연결이 끊김!");
+			socketSessions.forEach((userId, sess)->{
+				try {
+					String passToJspMessage = msgObj.getChnum()+"|"+ msgObj.getSender() +"|"+msgObj.getMessage()+"|"+msgObj.getId()+"|"+msgObj.getAction();
+					sess.sendMessage(new TextMessage(passToJspMessage));
+					} catch (IOException e) {
+						log.info("전송 에러!");
+						e.printStackTrace();
+				}
+			});
 			log.info("[퇴장전송] " + msgObj.getChnum() + "방에" + msgObj.getSender() + "가 나갔음" + msgObj.getMessage() + "]");
 		}
 		
 		log.info("모두에게 전송하기 전 세션 리스트 : "+socketSessions);
-		// 받은 메세지를 모든 사용자들에게 전송(여기서 특정한 채널에 전송을 해야함)
-		socketSessions.forEach((userId, sess)->{
-			try {
-				// jsp페이지에 보낼 메세지
-				String passToJspMessage = msgObj.getChnum()+"|"+ msgObj.getSender() +"|"+msgObj.getMessage()+"|"+msgObj.getId();
-				sess.sendMessage(new TextMessage(passToJspMessage));
-				log.info("--------------------> " +getUserId(sess) + "에게  [" + passToJspMessage + "] 전달함");
-				} catch (IOException e) {
-					log.info("전송 에러!");
-					e.printStackTrace();
-			}
-		});
+		
 	}
 
 	@Override

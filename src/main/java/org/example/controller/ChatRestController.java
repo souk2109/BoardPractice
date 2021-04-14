@@ -117,10 +117,23 @@ public class ChatRestController {
 	@DeleteMapping(value = "/deleteValidate", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> deleteValidate(@RequestBody ChatUserValidateVO chatUserValidateVO){
 		int _result = chatService.deleteRequest(chatUserValidateVO);
-		String result = _result == 0 ? "fail" : "success";
+		String result = _result == 1 ? "success":"fail";
 		return new ResponseEntity<String> (result,HttpStatus.OK);
 	}
 	
+	@DeleteMapping(value = "/outRoomRequest", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> outRoomRequest(@RequestBody ChatUserValidateVO chatUserValidateVO){
+		int _result = chatService.outRoomRequest(chatUserValidateVO);
+		String result = null;
+		if(_result == 2) {
+			result = "deleteRoom"; // 방 삭제
+		}else if(_result == 1) {
+			result = "success";
+		}else {
+			result = "fail";
+		}
+		return new ResponseEntity<String> (result,HttpStatus.OK);
+	}
 	// id에 해당하는 사용자의 입장일로부터 시작된 대화를 불러와야한다. 그래서 id와 chnum을 받아왔다.
 	@GetMapping(value = "/getMessage/{chnum}/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<ChatMessageVO>> getMyRoomRequest(@PathVariable("chnum") int chnum, @PathVariable("id") String id){

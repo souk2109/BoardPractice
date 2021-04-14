@@ -102,6 +102,22 @@
 					showMyRequestList(); // 방 삭제 시 해당 방에 대한 요청도 삭제됐으므로 요청 리스트도 함께 갱신
 					console.log("삭제 여부 : "+result);
 				});
+				
+				
+				let outObj = {id:id, chnum: chnum};
+				let outResult = null;
+		
+				
+				chatService.outRoomRequest(outObj, function(deleteResult) {
+					outResult = deleteResult;
+					// 정상적으로 validate를 변경했거나, 참여 인원수가 0명이라서 방이 삭제된 경우.
+					if(deleteResult === "success" || deleteResult === "deleteRoom"){
+						// window.location.href = '/board002/chat/attendingRooms';
+					}
+				}, function() {
+					alert("에러로 퇴장하지 못했습니다..");
+				});
+				
 			}
 			return;
 		});
