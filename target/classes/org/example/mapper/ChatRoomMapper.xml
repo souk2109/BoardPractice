@@ -82,4 +82,9 @@
 		where chnum = #{chnum}
 	</update>
 	
+	<select id="getUserNicknameByChnum" resultType="string">
+	select nickname
+	from tbl_user 
+	where id in (select id from tbl_chat_validate where chnum = #{chnum} and (validate = 2 or validate = 4));
+	</select>
 </mapper>

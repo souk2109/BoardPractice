@@ -6,6 +6,7 @@ import org.example.domain.ChatMyRoomRequestVO;
 import org.example.domain.ChatRoomVO;
 import org.example.domain.ChatUserCurrentState;
 import org.example.domain.ChatUserValidateVO;
+import org.example.domain.UserVO;
 
 public interface ChatService {
 	public int makeChatRoom(ChatRoomVO chatRoomVO);
@@ -24,5 +25,6 @@ public interface ChatService {
 	// public int addCurrentNum(int chnum);
 	public void updateUserId(ChatRoomVO chatRoomVO);
 	public int requestApproval(ChatUserValidateVO chatUserValidateVO);
-	public String getNicknameById(String id);
+	public List<String> getUserNicknameByChnum(int chnum);
+	public UserVO getUserById(String id);
 }

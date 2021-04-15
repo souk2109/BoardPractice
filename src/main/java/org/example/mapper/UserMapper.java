@@ -5,4 +5,5 @@ import org.example.domain.UserVO;
 public interface UserMapper {
 	public UserVO getUser(String id);
 	public int insertUser(UserVO userVO);
+	public UserVO getUserById(String id);
 }

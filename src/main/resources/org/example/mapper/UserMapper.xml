@@ -30,5 +30,7 @@
 		insert into tbl_user(id, pwd, nickname) values(#{id}, #{pwd}, #{nickname})
 	</insert>
 	 
-	
+	<select id="getUserById" resultType="org.example.domain.UserVO">
+		select * from tbl_user where id = #{id};
+	</select>
 </mapper>

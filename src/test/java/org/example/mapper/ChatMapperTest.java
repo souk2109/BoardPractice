@@ -45,4 +45,9 @@ public class ChatMapperTest {
 		String list = chatRoomMapper.getUserId(2248);
 		System.out.println(list);
 	}
+	
+	@Test
+	public void getUserNicknameByChnumTest() {
+		log.info(chatRoomMapper.getUserNicknameByChnum(2415));
+	}
 }

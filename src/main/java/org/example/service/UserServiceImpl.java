@@ -33,5 +33,4 @@ public class UserServiceImpl implements UserService{
 		authMapper.insertAuthUser(userVO.getId());
 		return result;
 	}
-
 }

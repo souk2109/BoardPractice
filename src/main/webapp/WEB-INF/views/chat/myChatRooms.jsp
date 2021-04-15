@@ -169,7 +169,7 @@
 			}		
 		});
 	}
-	
+	 
 	function requestListBtnService(userIdList) {
 		console.log(userIdList[0]);
 		// 거절 버튼 클릭시 (id와 chnum을 보내서 db에 validate를 2로 변경, updatedate도 갱신)
@@ -197,6 +197,11 @@
 			chnum = $(this).closest('tr').find('.chnum').text();
 			let num = $(this).closest('tr').find('.num').text();
 			userId = userIdList[num-1].id;
+			
+			chatService.getNicknameById(userId, function(nickname) {
+				userNickname = nickname; 
+				console.log("userNickname : "+userNickname);
+			});
 			let acceptCheck = confirm("승인 하시겠습니까?");
 			if(acceptCheck){
 				let validateObj = {chnum:chnum, id:userId, validate : 4};
@@ -204,18 +209,16 @@
 				// 요청 수락시 
 				chatService.requestApproval(validateObj, function(result) {
 					if(result == "success"){
-						chatService.getNicknameById(userId, function(nickname) {
-							userNickname = nickname;
-						})
 						showMyRequestList();
-						send(JSON.stringify({message: userNickname + '님이 입장하셨습니다.', sender:userId, id : userId, chnum : chnum, action : 'JOIN'}));
-						alert('정상적으로 수락하였습니다.');	
+						alert('정상적으로 수락하였습니다.');
 					}else{
 						showMyRequestList();
 						alert('취소된 요청입니다.');
+						return;
 					}
-					
+					send(JSON.stringify({message: userNickname + '님이 입장하셨습니다.', sender:userId, id : userId, chnum : chnum, action : 'JOIN'}));
 				});
+				
 				/* chatService.updateUserid(userObj, function() {
 					_usercheck = 1;
 					if(_valicheck*_usercheck === 1){

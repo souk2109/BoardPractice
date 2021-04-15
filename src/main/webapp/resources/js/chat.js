@@ -1,5 +1,8 @@
+// ajax통신을 할 때 동기식으로 하기 위해서 false로 뒀다. 
 var chatService = (function() {
-	
+	$.ajaxSetup({
+		async : false
+	});
 	// 내가 만든 채팅방 요청
 	function getMyChatRooms(id, callback, error) {
 		$.getJSON("/board002/chat/myChatRoom/" + id +".json", function(data) {
@@ -113,17 +116,30 @@ var chatService = (function() {
 				error();
 		});
 	}
-	
-	function getNicknameById(id, callback) {
-		$.getJSON("/board002/chat/getNicknameById/" + id + ".json", function(nickname) {
-			if(nickname){
-				callback(nickname);
+	 
+	function getUserNicknameByChnum(id, callback, error) {
+		$.getJSON("/board002/chat/getUserNicknameByChnum/" + id + ".json", function(list) {
+			if(callback){
+				callback(list);
 			}
 		}).fail(function(xhr, status, err) {
 			if(error)
-				error();
+				error(err);
 		});
 	}
+
+	// user객체를 받아서 nickname만 가져옴
+	function getNicknameById(id, callback, error) {
+		$.get("/board002/chat/getUserById/" + id + ".json", function(user) {
+			if(callback){
+				callback(user.nickname);
+			}
+		}).fail(function(xhr, status, err) {
+			if(error)
+				error(err);
+		});
+	}
+	 
 	
 	// 사용자의 채팅방에 대한 validate를 갱신함
 	function updateValidate(validateObj, callback) {
@@ -329,6 +345,7 @@ var chatService = (function() {
 		getChatMessage : getChatMessage,
 		requestApproval : requestApproval,
 		outRoomRequest : outRoomRequest,
-		getNicknameById : getNicknameById
+		getNicknameById : getNicknameById,
+		getUserNicknameByChnum : getUserNicknameByChnum
 	};
 })();

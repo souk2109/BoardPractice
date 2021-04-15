@@ -318,10 +318,11 @@
             </div>
             <!-- /.navbar-static-side -->
         </nav>
-                <div id="page-wrapper">
+      <div id="page-wrapper">
       <script  src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <script type="text/javascript">
 	      const socket = new WebSocket("ws://localhost:8080/board002/socket/chatSocket");
+	      
 	  </script>
 	
       

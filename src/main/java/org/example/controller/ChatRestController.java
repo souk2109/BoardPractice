@@ -7,8 +7,7 @@ import org.example.domain.ChatMyRoomRequestVO;
 import org.example.domain.ChatRoomVO;
 import org.example.domain.ChatUserCurrentState;
 import org.example.domain.ChatUserValidateVO;
-import org.example.domain.ReplyVO;
-import org.example.mapper.ChatValidateMapper;
+import org.example.domain.UserVO;
 import org.example.service.ChatMessageService;
 import org.example.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,6 +43,14 @@ public class ChatRestController {
 		return new ResponseEntity<List<ChatRoomVO>>(myRoomList, HttpStatus.OK);
 	}
 	 
+	@GetMapping(value = "/getUserNicknameByChnum/{chnum}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<String>> getUserNicknameByChnum(@PathVariable("chnum") int chnum){
+		List<String> nicknameList = chatService.getUserNicknameByChnum(chnum);
+		return new ResponseEntity<List<String>>(nicknameList, HttpStatus.OK);
+	}
+	
+	
 	@GetMapping(value = "/allChatRoom/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<ChatUserCurrentState>> getAllChatRooms(@PathVariable("id") String id){
@@ -89,11 +95,11 @@ public class ChatRestController {
 		return new ResponseEntity<List<ChatMyRoomRequestVO>>(roomRequests, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/getNicknameById/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
+	@GetMapping(value = "/getUserById/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<String> getNicknameById(@PathVariable("id") String id){
-		String nickname = chatService.getNicknameById(id);
-		return new ResponseEntity<String>(nickname, HttpStatus.OK);
+	public ResponseEntity<UserVO> getUserById(@PathVariable("id") String id){
+		UserVO user = chatService.getUserById(id);
+		return new ResponseEntity<UserVO>(user, HttpStatus.OK);
 	}
 	
 	// 채팅방 입장 요청 거절 시 

@@ -23,4 +23,5 @@ public interface ChatRoomMapper {
 	public String getUserId(int chnum); // 채팅방에 저장된 사용자의 id를 불러옴(userid)
 	public void updateUserId(ChatRoomVO chatRoomVO);
 	public int unable(int chnum);
+	public List<String> getUserNicknameByChnum(int chnum);
 }

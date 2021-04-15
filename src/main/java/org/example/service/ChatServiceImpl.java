@@ -30,6 +30,7 @@ public class ChatServiceImpl implements ChatService{
 	
 	@Autowired
 	private UserMapper userMapper;
+
 	
 	@Transactional
 	@Override
@@ -180,10 +181,18 @@ public class ChatServiceImpl implements ChatService{
 		}
 		 
 	}
+ 
+
+	// chnum인 채팅방에 있는 사용자 명을 받아옴
+	// getUserNicknameByChnum로 수정하기
+	@Override
+	public List<String> getUserNicknameByChnum(int chnum) {
+		List<String> list = chatRoomMapper.getUserNicknameByChnum(chnum);
+		return list;
+	}
 
 	@Override
-	public String getNicknameById(String id) {
-		UserVO userVO = userMapper.getUser(id);
-		return userVO.getNickname();
+	public UserVO getUserById(String id) {
+		return userMapper.getUserById(id);
 	}
 }

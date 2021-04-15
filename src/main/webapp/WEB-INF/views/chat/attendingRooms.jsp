@@ -15,9 +15,11 @@
 	<div class="col-xs-4 col-sm-4 text-center" style="height: 60px;">채팅방</div>
 	<div class="col-xs-8 col-sm-8 text-center" style="height: 60px;">내용</div>
 	
-	<div class="col-xs-4 col-sm-4" style="height: 500px; border: 2px solid green;" id="chat-title">
+	<div class="col-xs-1 col-sm-1" style="height: 500px;"></div>
+	<div class="col-xs-2 col-sm-2" style="height: 500px; border: 2px solid green;" id="chat-title">
+		<input type="text">
 	</div>
-	<div class="col-xs-8 col-sm-8" style="height: 500px; border: 2px solid green;">
+	<div class="col-xs-6 col-sm-6" style="height: 500px; border: 2px solid green;">
 		<div style="height: 90%; overflow: auto;" id="chat-content">
 			<div class="text-center">채널을 선택하세요!</div>
 		</div>
@@ -28,6 +30,12 @@
 			<button id="outbtn" class="btn btn-warning col-xs-2 col-sm-2">나가기</button>
 		</div>
 	</div>
+	<div class="col-xs-2 col-sm-2" style="height: 500px;">
+		<div class="text-center" style="background-color: yellow;">참여중인 사람
+			<div id="current-people" style="background-color: #FFFFCC"></div>
+		</div>
+	</div>
+	<div class="col-xs-1 col-sm-1" style="height: 500px;"></div>
 </div>
 <script type="text/javascript" src="/board002/resources/js/chat.js"></script>
 <script type="text/javascript">
@@ -57,10 +65,10 @@
 			$("#chat-service").show(); // 채팅방 제목을 클릭했을 때 메세지를 작성하고 전송하는 view를 보여줌
 			$(".chat-title").attr('class', 'text-center alert alert-warning chat-title');
 			$(this).attr('class', 'text-center alert alert-success chat-title');
-			
+	
 			currentChnum = $(this).data("chnum");
 			currentHostId = $(this).data("hostid");
-			
+			send(JSON.stringify({message: "보고있음", sender:sender, id : id, chnum : currentChnum, action : 'SEE'}));
 			userObj = {id:id, chnum:currentChnum};
 			// id와 chnum을 넘겨서 받아와야한다.(id는 채팅방에 접속한 날짜를 얻어내기 위해서 사용)
 			chatService.getChatMessage(userObj, function(list) {
@@ -83,6 +91,15 @@
 				$("#chat-content").append(str);
 				scrolldown();
 			});
+			chatService.getUserNicknameByChnum(currentChnum, function(list) {
+				$("#current-people").html('');
+				let str='';
+				for(var i=0; i< list.length; i++){
+					str += "<div data-nickname="+list[i]+">" + list[i] + "</div>";
+				}
+				$("#current-people").append(str);
+			 
+			});
 		});	
 	}
 </script>
@@ -91,49 +108,77 @@
 <script>
 	function connect() {
 		socket.onopen = function() {
-			console.log('info: connection opened!');
+			console.log('info: connection opened!');	
 			socket.onmessage = function(event) {
 				let rawMessage = event.data;
 				let messageArr = rawMessage.split("|");
 				
+				let action = messageArr[0];
 				let chnum = null;
 				let messageSender = null;
 				let message = null;
 				let messageId = null;
-				let action = null;
-				if (messageArr.length === 5) {
-					chnum = messageArr[0];
-					messageSender = messageArr[1];
-					message = messageArr[2];
-					messageId = messageArr[3];
-					action = messageArr[4];
-					sendDate = new Date();
-					console.log(chnum + "채널, 아이디: "+messageId + messageSender + " : [" + message + "] action : "+ action);
-					// 보낸 사람과 받는사람이 같은 채널인 경우
-					if(parseInt(chnum) === currentChnum){
-						// 일반 전송인 경우
-						if(action === 'SEND'){
+				
+				if(action === 'SEND'){
+					if (messageArr.length === 5) {
+						chnum = messageArr[1];
+						messageSender = messageArr[2];
+						message = messageArr[3];
+						messageId = messageArr[4];
+						sendDate = new Date();
+						console.log("messageArr.length : "+ messageArr.length + ", " + chnum + "채널, 아이디: "+messageId + messageSender + " : [" + message + "] action : "+ action);
+						// 보낸 사람과 받는사람이 같은 채널인 경우
+						if(parseInt(chnum) === currentChnum){
 							if(id === messageId){
 								$("#chat-content").append("<div class='alert alert-info' style='text-align:right'>나 :" + message + "<div style='color:#8bafc1'>"+ chatService.messageTime(sendDate) + "</div></div>");
 							}else{
 								$("#chat-content").append("<div class='alert alert-warning'>"+ messageSender + ": " + message +"<div style='color:#b9b189'>" + chatService.messageTime(sendDate) + "</div></div>");
 							}
-							scrolldown();	
+							scrolldown();
 						}
-						// 채팅방 퇴장인 경우
-						else if (action === 'OUT') {
+					}else{
+						alert('SEND 잘못된 전송!');
+					}
+				}else if(action === 'OUT'){
+					if (messageArr.length === 5) {
+						chnum = messageArr[1];
+						messageSender = messageArr[2];
+						message = messageArr[3];
+						messageId = messageArr[4];
+						sendDate = new Date();
+						console.log(chnum + "채널, 아이디: "+messageId + messageSender + " : [" + message + "] action : "+ action);
+						
+						// 보낸 사람과 받는사람이 같은 채널인 경우
+						if(parseInt(chnum) === currentChnum){
 							$("#chat-content").append("<div class='alert' style='text-align:center'>" + message +"<span style='color:#b9b189'>" + chatService.messageTime(sendDate) + "</span></div>");
 							scrolldown();
 						}
+					}else{
+						alert('OUT 잘못된 전송!');
 					}
-				
-				} else {
-					console.log("커넥션 닫음");
+				}else if(action === 'SEE'){
+					if (messageArr.length === 3) {
+						messageSender = messageArr[1];
+						messageId = messageArr[2];
+						console.log("보낸사람 : " + messageSender + "보낸 사람 아이디" + messageId);
+						$("[data-nickname=" + messageSender + "]").html("●"+messageSender);
+					}
+				}else{
+					// alert('SEE 잘못된 전송!');
 				}
 			}
-	
+
+				 
+				/* else if(action === 'SEE'){
+					$("[data-nickname=" + messageSender + "]").html("●"+messageSender);
+				}else if(action === 'UNSEE'){
+					$("[data-nickname=" + messageSender + "]").html(""+messageSender);
+				} */
+				
+			
+			// 보고있을 떄 : SEE 초록불(참여중) , 안보고있을 떄 : UNSEE ,부재중 
 			socket.onclose = function(event) {
-				console.log("Info : connection closed");
+				console.log("Info : connection closed");	
 				setTimeout(function() {
 					connect();
 				}, 1000); 
@@ -147,7 +192,7 @@
 	// 전송버튼 클릭 시
 	$("#sendbtn").on("click", function(e) {
 		let inputValue = $("input#msg").val();
-		send(JSON.stringify({message: inputValue, sender:sender, id : id, chnum : currentChnum, action : 'SEND'}));			
+		send(JSON.stringify({action : 'SEND', message: inputValue, sender:sender, id : id, chnum : currentChnum}));			
 		$("input#msg").val('');
 	});
 	
@@ -172,14 +217,14 @@
 				// 방 주인이 나가는 경우
 				if(currentHostId === id){
 					chatService.unableChatRoom(currentChnum, function(result) {
-						send(JSON.stringify({message: '방장님이 퇴장하셨습니다.', sender:sender, id : id, chnum : currentChnum, action : 'OUT'}));
+						send(JSON.stringify({action : 'OUT', message: '방장님이 퇴장하셨습니다.', sender:sender, id : id, chnum : currentChnum}));
 					}, function() {
 						console.log("에러로 퇴장하지 못했습니다..");
 					});
 				}
 				// 일반 사용자가 나가는 경우
 				else{
-					send(JSON.stringify({message: sender + '님이 퇴장하셨습니다.', sender:sender, id : id, chnum : currentChnum, action : 'OUT'}));
+					send(JSON.stringify({action : 'OUT', message: sender + '님이 퇴장하셨습니다.', sender:sender, id : id, chnum : currentChnum}));
 				}	
 			}
 			
