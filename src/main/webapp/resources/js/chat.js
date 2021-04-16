@@ -181,6 +181,27 @@ var chatService = (function() {
 		});
 	}
 	
+	function makeParticipateObj(participateObj, callback) {
+		$.ajax({
+			type : 'post',
+			url : '/board002/chat/makeParticipate',
+			data : JSON.stringify(participateObj),
+			async: false,
+			contentType : "application/json; charset=utf-8",
+			success : function(Result, status, xhr) {
+				if(callback){
+					callback(Result);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	
+	
 	// 사용자의 채팅방에 대한 validate를 삭제함 
 	function deleteValidate(validateObj, callback) {
 		$.ajax({
@@ -346,6 +367,8 @@ var chatService = (function() {
 		requestApproval : requestApproval,
 		outRoomRequest : outRoomRequest,
 		getNicknameById : getNicknameById,
-		getUserNicknameByChnum : getUserNicknameByChnum
+		getUserNicknameByChnum : getUserNicknameByChnum,
+		
+		makeParticipateObj : makeParticipateObj
 	};
 })();

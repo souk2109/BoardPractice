@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.example.domain.ChatMessageVO;
 import org.example.domain.ChatMyRoomRequestVO;
+import org.example.domain.ChatParticipateVO;
 import org.example.domain.ChatRoomVO;
 import org.example.domain.ChatUserCurrentState;
 import org.example.domain.ChatUserValidateVO;
 import org.example.domain.UserVO;
 import org.example.service.ChatMessageService;
+import org.example.service.ChatParticipateSerivce;
 import org.example.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,9 @@ public class ChatRestController {
 	
 	@Autowired
 	private ChatMessageService chatMessageService; 
+	
+	@Autowired
+	private ChatParticipateSerivce chatParticipateSerivce; 
 	
 	// json형식으로 리스트 데이터를 전송
 	@GetMapping(value = "/myChatRoom/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
@@ -121,6 +126,14 @@ public class ChatRestController {
 		}
 		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "/makeParticipate", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
+	public ResponseEntity<String> makeParticipateObj(@RequestBody ChatParticipateVO participateVO) {
+		int result = chatParticipateSerivce.insertChatParticipateVO(participateVO);
+		return result == 1 ? new ResponseEntity<String>("success", HttpStatus.OK)
+				: new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 	
 	// ChatRoomVO에 userid와 chnum이 있으므로 그냥 이것으로 받음
 	@RequestMapping(method = { RequestMethod.PUT,RequestMethod.PATCH }, 

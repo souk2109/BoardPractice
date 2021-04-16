@@ -5,7 +5,9 @@ import java.util.List;
 import org.example.domain.ChatParticipateVO;
 import org.example.mapper.ChatParticipateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ChatParticipateSerivceImpl implements ChatParticipateSerivce{
 	@Autowired
 	private ChatParticipateMapper participateMapper;

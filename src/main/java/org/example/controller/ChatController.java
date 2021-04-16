@@ -2,11 +2,14 @@ package org.example.controller;
  
 import org.example.domain.ChatAction;
 import org.example.domain.ChatMessageVO;
+import org.example.domain.ChatParticipateVO;
 import org.example.domain.ChatRoomVO;
 import org.example.service.ChatMessageService;
+import org.example.service.ChatParticipateSerivce;
 import org.example.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,26 +29,44 @@ public class ChatController {
 	@Autowired
 	private ChatMessageService chatMessageService;
 	
+	@Autowired
+	private ChatParticipateSerivce chatParticipateSerivce;
+	
 	@GetMapping("/makeChat")
 	public void makeChat() {
 
 	}
 
+	// 방이 생성된 경우tbl_chat_message테이블에 저장
+	// 그리고 tbl_chat_participate에도 저장
+	@Transactional
 	@PostMapping(value = "/makeChat")
 	public String domakeChat(ChatRoomVO chatRoomVO, RedirectAttributes attr) {
 		log.info("채팅방 생성 객체 : " + chatRoomVO);
 		int chnum = chatService.makeChatRoom(chatRoomVO);
 		if (chnum > 0)
 			log.info("채팅방 생성 완료!");
+		
+		String id = chatRoomVO.getId();
+		String nickname = chatRoomVO.getHostNick();
+		
 		ChatMessageVO chatMessageVO = new ChatMessageVO();
-		chatMessageVO.setId(chatRoomVO.getId());
-		chatMessageVO.setSender(chatRoomVO.getHostNick());
+		chatMessageVO.setId(id);
+		chatMessageVO.setSender(nickname);
 		chatMessageVO.setMessage("방을 생성하였습니다.");
 		chatMessageVO.setChnum(chnum);
 		chatMessageVO.setAction(ChatAction.JOIN);
-		int insertResult = chatMessageService.insertChatMessage(chatMessageVO);
-		if(insertResult == 1) {
-			log.info("메세지 입력 완료!");
+		int insertMessageResult = chatMessageService.insertChatMessage(chatMessageVO);
+		if(insertMessageResult == 1) {
+			log.info("[ChatController] insertChatMessage 입력 완료!");
+		}
+		ChatParticipateVO chatParticipateVO = new ChatParticipateVO();
+		chatParticipateVO.setId(id);
+		chatParticipateVO.setChnum(chnum);
+		chatParticipateVO.setNickname(nickname);
+		int insertParticipate = chatParticipateSerivce.insertChatParticipateVO(chatParticipateVO);
+		if(insertParticipate == 1) {
+			log.info("[ChatController] insertChatParticipateVO 입력 완료!");
 		}
 		return "redirect:/chat/myChatRooms";
 	}

@@ -205,7 +205,7 @@
 			let acceptCheck = confirm("승인 하시겠습니까?");
 			if(acceptCheck){
 				let validateObj = {chnum:chnum, id:userId, validate : 4};
-				
+				let participateObj = {chnum:chnum, id:userId, nickname : userNickname};
 				// 요청 수락시 
 				chatService.requestApproval(validateObj, function(result) {
 					if(result == "success"){
@@ -216,7 +216,10 @@
 						alert('취소된 요청입니다.');
 						return;
 					}
-					send(JSON.stringify({message: userNickname + '님이 입장하셨습니다.', sender:userId, id : userId, chnum : chnum, action : 'JOIN'}));
+					chatService.makeParticipateObj(participateObj, function(result) {
+						console.log('ParticipateObj 생성');
+					});
+					send(JSON.stringify({message: userNickname + '님이 입장하셨습니다.', sender : userNickname, id : userId, chnum : chnum, action : 'JOIN'}));
 				});
 				
 				/* chatService.updateUserid(userObj, function() {
