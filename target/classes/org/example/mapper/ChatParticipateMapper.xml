@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.ChatParticipateMapper">
+	<select id="getChatParticipateVOByChnum" resultType="org.example.domain.ChatParticipateVO">
+		select * from tbl_chat_participate where chnum = #{chnum}
+	</select>
+	
+	<select id="getChatParticipateVOByChnumAndId" resultType="org.example.domain.ChatParticipateVO">
+		select * from tbl_chat_participate where chnum = #{chnum} and id = #{id}
+	</select>
+	
+	<insert id="insertChatParticipateVO">
+		insert into tbl_chat_participate(chnum, id, nickname) values(#{chnum},#{id},#{nickname});
+	</insert>
+	
+	<update id="updateInChatParticipateVO">
+		update tbl_chat_participate set enable = '1', inDate = current_time() where chnum = #{chnum} and id = #{id};
+	</update>
+	
+	<update id="updateOutChatParticipateVO">
+		update tbl_chat_participate set enable = '0', outDate = current_time(), activeTime=activeTime + TIMESTAMPDIFF(SECOND, inDate, outDate) where chnum = #{chnum} and id = #{id};
+	</update>
+</mapper>

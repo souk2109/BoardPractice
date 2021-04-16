@@ -53,16 +53,13 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		 */ 
 		
 		log.info(socketSessions);
-		socketSessions.forEach((id, sess) -> {
-			try { // jsp페이지에 보낼 메세지 String
-				String passToJspMessage = ChatAction.SEE + "|" + userNickname + "|" + userId;
-				sess.sendMessage(new TextMessage(passToJspMessage));
-				log.info("---passToJspMessage-----------------> " + passToJspMessage);
-			} catch (IOException e) {
-				log.info("전송 에러!");
-				e.printStackTrace();
-			}
-		}); 
+		/*
+		 * socketSessions.forEach((id, sess) -> { try { // jsp페이지에 보낼 메세지 String String
+		 * passToJspMessage = ChatAction.SEE + "|" + userNickname + "|" + userId;
+		 * sess.sendMessage(new TextMessage(passToJspMessage));
+		 * log.info("---passToJspMessage-----------------> " + passToJspMessage); }
+		 * catch (IOException e) { log.info("전송 에러!"); e.printStackTrace(); } });
+		 */
 	}
 
 	// 메세지를 받는 역할읗 한다.
@@ -74,7 +71,9 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		msgObj = jsonMapper.readValue(rawMessage, ChatMessageVO.class); // json형식의 문자를 특정 클래스로 캐스팅(? 담아준다)
 
 		// 메세지를 db(tbl_chat_message)에 저장함
-		chatMessageService.insertChatMessage(msgObj);
+		if(msgObj.getAction() != ChatAction.SEE) {
+			chatMessageService.insertChatMessage(msgObj);
+		}
 
 		// 일반 전송한 경우
 		if (msgObj.getAction() == ChatAction.SEND) {
@@ -108,7 +107,8 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		else if (msgObj.getAction() == ChatAction.SEE) {
 			socketSessions.forEach((userId, sess) -> {
 				try {
-					String passToJspMessage = msgObj.getChnum() + "|" + msgObj.getSender() + "|" + msgObj.getMessage() + "|" + msgObj.getId() + "|" + msgObj.getAction();
+					log.info("SEE : "+msgObj);
+					String passToJspMessage = msgObj.getAction() + "|" + msgObj.getChnum() + "|" + msgObj.getSender() + "|" + msgObj.getId();
 					sess.sendMessage(new TextMessage(passToJspMessage));
 				} catch (IOException e) {
 					log.info("전송 에러!");

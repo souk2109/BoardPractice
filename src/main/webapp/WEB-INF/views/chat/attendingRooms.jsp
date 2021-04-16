@@ -68,7 +68,7 @@
 	
 			currentChnum = $(this).data("chnum");
 			currentHostId = $(this).data("hostid");
-			send(JSON.stringify({message: "보고있음", sender:sender, id : id, chnum : currentChnum, action : 'SEE'}));
+			send(JSON.stringify({sender:sender, id : id, chnum : currentChnum, action : 'SEE'}));
 			userObj = {id:id, chnum:currentChnum};
 			// id와 chnum을 넘겨서 받아와야한다.(id는 채팅방에 접속한 날짜를 얻어내기 위해서 사용)
 			chatService.getChatMessage(userObj, function(list) {
@@ -157,13 +157,22 @@
 						alert('OUT 잘못된 전송!');
 					}
 				}else if(action === 'SEE'){
+					if (messageArr.length === 4) {
+						chnum = messageArr[1];
+						messageSender = messageArr[2];
+						messageId = messageArr[3];
+						if(parseInt(chnum) === currentChnum){
+							$("[data-nickname=" + messageSender + "]").html("●"+messageSender);
+						}
+					}
+				}else if(action === 'UNSEE'){
 					if (messageArr.length === 3) {
 						messageSender = messageArr[1];
 						messageId = messageArr[2];
-						console.log("보낸사람 : " + messageSender + "보낸 사람 아이디" + messageId);
-						$("[data-nickname=" + messageSender + "]").html("●"+messageSender);
+						$("[data-nickname=" + messageSender + "]").html(messageSender);
 					}
-				}else{
+				}
+				else{
 					// alert('SEE 잘못된 전송!');
 				}
 			}
