@@ -8,6 +8,7 @@ import org.example.domain.ChatRoomVO;
 import org.example.domain.ChatUserCurrentState;
 import org.example.domain.ChatUserValidateVO;
 import org.example.domain.UserVO;
+import org.example.mapper.ChatParticipateMapper;
 import org.example.mapper.ChatRoomMapper;
 import org.example.mapper.ChatValidateMapper;
 import org.example.mapper.UserMapper;
@@ -31,6 +32,8 @@ public class ChatServiceImpl implements ChatService{
 	@Autowired
 	private UserMapper userMapper;
 
+	@Autowired
+	private ChatParticipateMapper chatParticipateMapper;
 	
 	@Transactional
 	@Override
@@ -143,11 +146,14 @@ public class ChatServiceImpl implements ChatService{
 	@Override
 	public int outRoomRequest(ChatUserValidateVO chatUserValidateVO) {
 		int chnum = chatUserValidateVO.getChnum();
+		String id = chatUserValidateVO.getId();
 		chatRoomMapper.minusCurrentNum(chnum);
 		if(chatRoomMapper.getCurrentNum(chnum)==0) {
 			chatRoomMapper.delete(chnum);
 			log.info(chnum + "방, 삭제 완료");
 			return 2;
+		}else {
+			chatParticipateMapper.deleteChatParticipateVO(chnum, id);
 		}
 		return chatValidateMapper.deleteValidate(chatUserValidateVO);
 	}
@@ -180,15 +186,6 @@ public class ChatServiceImpl implements ChatService{
 			return 2;
 		}
 		 
-	}
- 
-
-	// chnum인 채팅방에 있는 사용자 명을 받아옴
-	// getUserNicknameByChnum로 수정하기
-	@Override
-	public List<String> getUserNicknameByChnum(int chnum) {
-		List<String> list = chatRoomMapper.getUserNicknameByChnum(chnum);
-		return list;
 	}
 
 	@Override

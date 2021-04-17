@@ -47,15 +47,34 @@ public class ChatRestController {
 		List<ChatRoomVO> myRoomList = chatService.getMyList(id);
 		return new ResponseEntity<List<ChatRoomVO>>(myRoomList, HttpStatus.OK);
 	}
-	 
-	@GetMapping(value = "/getUserNicknameByChnum/{chnum}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
-			MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<List<String>> getUserNicknameByChnum(@PathVariable("chnum") int chnum){
-		List<String> nicknameList = chatService.getUserNicknameByChnum(chnum);
-		return new ResponseEntity<List<String>>(nicknameList, HttpStatus.OK);
+	
+	@RequestMapping(method = {RequestMethod.PUT,RequestMethod.PATCH},value = "/updateInParticipate", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> updateInParticipate(@RequestBody ChatParticipateVO participateVO) {
+		int chnum = participateVO.getChnum();
+		String id = participateVO.getId();
+		log.info(participateVO);
+		int _result = chatParticipateSerivce.updateInChatParticipateVO(chnum, id);
+		String result = _result == 1 ? "success" : "fail";
+		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
 	
+	@RequestMapping(method = {RequestMethod.PUT,RequestMethod.PATCH},value = "/updateOutParticipate", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> updateOutParticipate(@RequestBody ChatParticipateVO participateVO) {
+		int chnum = participateVO.getChnum();
+		String id = participateVO.getId();
+		log.info(participateVO);
+		int _result = chatParticipateSerivce.updateOutChatParticipateVO(chnum, id);
+		String result = _result == 1 ? "success" : "fail";
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
 	
+	@GetMapping(value = "/getChatParticipateList/{chnum}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<ChatParticipateVO>> getChatParticipateList(@PathVariable("chnum") int chnum){
+		List<ChatParticipateVO> ChatParticipateList = chatParticipateSerivce.getChatParticipateVOByChnum(chnum);
+		return new ResponseEntity<List<ChatParticipateVO>>(ChatParticipateList, HttpStatus.OK);
+	}
+	 
 	@GetMapping(value = "/allChatRoom/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<ChatUserCurrentState>> getAllChatRooms(@PathVariable("id") String id){

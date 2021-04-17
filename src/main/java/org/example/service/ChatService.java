@@ -25,6 +25,5 @@ public interface ChatService {
 	// public int addCurrentNum(int chnum);
 	public void updateUserId(ChatRoomVO chatRoomVO);
 	public int requestApproval(ChatUserValidateVO chatUserValidateVO);
-	public List<String> getUserNicknameByChnum(int chnum);
 	public UserVO getUserById(String id);
 }

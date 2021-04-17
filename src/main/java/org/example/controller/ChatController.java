@@ -48,8 +48,8 @@ public class ChatController {
 			log.info("채팅방 생성 완료!");
 		
 		String id = chatRoomVO.getId();
-		String nickname = chatRoomVO.getHostNick();
 		
+		String nickname = chatService.getUserById(id).getNickname();
 		ChatMessageVO chatMessageVO = new ChatMessageVO();
 		chatMessageVO.setId(id);
 		chatMessageVO.setSender(nickname);

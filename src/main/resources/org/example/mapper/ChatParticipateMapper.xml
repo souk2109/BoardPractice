@@ -10,9 +10,15 @@
 		select * from tbl_chat_participate where chnum = #{chnum} and id = #{id}
 	</select>
 	
+	<select id="getEnableVO" resultType="org.example.domain.ChatParticipateVO">
+		select * from tbl_chat_participate where enable = '1' and id = #{id}
+	</select>
+	
+	
 	<insert id="insertChatParticipateVO">
 		insert into tbl_chat_participate(chnum, id, nickname) values(#{chnum},#{id},#{nickname});
 	</insert>
+	
 	
 	<update id="updateInChatParticipateVO">
 		update tbl_chat_participate set enable = '1', inDate = current_time() where chnum = #{chnum} and id = #{id};
@@ -21,4 +27,8 @@
 	<update id="updateOutChatParticipateVO">
 		update tbl_chat_participate set enable = '0', outDate = current_time(), activeTime=activeTime + TIMESTAMPDIFF(SECOND, inDate, outDate) where chnum = #{chnum} and id = #{id};
 	</update>
+	
+	<delete id="deleteChatParticipateVO">
+		delete from tbl_chat_participate where id = #{id} and chnum = #{chnum}
+	</delete>
 </mapper>

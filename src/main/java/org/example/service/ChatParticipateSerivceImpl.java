@@ -16,7 +16,7 @@ public class ChatParticipateSerivceImpl implements ChatParticipateSerivce{
 	public List<ChatParticipateVO> getChatParticipateVOByChnum(int chnum) {
 		return participateMapper.getChatParticipateVOByChnum(chnum);
 	}
-
+	
 	@Override
 	public ChatParticipateVO getChatParticipateVOByChnumAndId(int chnum, String id) {
 		return participateMapper.getChatParticipateVOByChnumAndId(chnum, id);
@@ -35,5 +35,16 @@ public class ChatParticipateSerivceImpl implements ChatParticipateSerivce{
 	@Override
 	public int updateOutChatParticipateVO(int chnum, String id) {
 		return participateMapper.updateOutChatParticipateVO(chnum, id);
+	}
+
+
+	@Override
+	public ChatParticipateVO getEnableVO(String id) {
+		return participateMapper.getEnableVO(id);
+	}
+
+	@Override
+	public int deleteChatParticipateVO(int chnum, String id) {
+		return participateMapper.deleteChatParticipateVO(chnum, id);
 	}
 }

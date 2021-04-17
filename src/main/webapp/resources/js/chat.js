@@ -116,9 +116,9 @@ var chatService = (function() {
 				error();
 		});
 	}
-	 
-	function getUserNicknameByChnum(id, callback, error) {
-		$.getJSON("/board002/chat/getUserNicknameByChnum/" + id + ".json", function(list) {
+
+	function getChatParticipateList(chnum, callback, error) {
+		$.getJSON("/board002/chat/getChatParticipateList/" + chnum + ".json", function(list) {
 			if(callback){
 				callback(list);
 			}
@@ -127,7 +127,7 @@ var chatService = (function() {
 				error(err);
 		});
 	}
-
+	
 	// user객체를 받아서 nickname만 가져옴
 	function getNicknameById(id, callback, error) {
 		$.get("/board002/chat/getUserById/" + id + ".json", function(user) {
@@ -328,7 +328,7 @@ var chatService = (function() {
 			return  yy + '.' + mm +'.' +dd;
 		}
 	}
-	// 20.
+	
 	function messageTime(timeValue) {
 		let today = new Date();
 		let dateObj = new Date(timeValue);
@@ -349,6 +349,43 @@ var chatService = (function() {
 		}
 		return '('+date + hh +'시' + mi +'분) ';
 	}
+	
+	function updateInParticipate(userObj, callback, error) {
+		$.ajax({
+			type : 'put',
+			url : '/board002/chat/updateInParticipate',
+			data : JSON.stringify(userObj),
+			contentType : "application/json; charset=utf-8",
+			success : function(updateResult, status, xhr) {
+				if(callback){
+					callback(updateResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+	function updateOutParticipate(userObj, callback, error) {
+		$.ajax({
+			type : 'put',
+			url : '/board002/chat/updateOutParticipate',
+			data : JSON.stringify(userObj),
+			contentType : "application/json; charset=utf-8",
+			success : function(updateResult, status, xhr) {
+				if(callback){
+					callback(updateResult);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
 	return {
 		getMyChatRooms : getMyChatRooms,
 		deleteChatRoom : deleteChatRoom, 
@@ -367,8 +404,10 @@ var chatService = (function() {
 		requestApproval : requestApproval,
 		outRoomRequest : outRoomRequest,
 		getNicknameById : getNicknameById,
-		getUserNicknameByChnum : getUserNicknameByChnum,
 		
-		makeParticipateObj : makeParticipateObj
+		makeParticipateObj : makeParticipateObj,
+		getChatParticipateList : getChatParticipateList,
+		updateInParticipate : updateInParticipate,
+		updateOutParticipate : updateOutParticipate
 	};
 })();

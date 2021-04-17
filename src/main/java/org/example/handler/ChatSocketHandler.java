@@ -3,10 +3,14 @@ package org.example.handler;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.example.domain.ChatAction;
 import org.example.domain.ChatMessageVO;
+import org.example.domain.ChatParticipateVO;
+import org.example.domain.ChatRoomVO;
 import org.example.service.ChatMessageService;
+import org.example.service.ChatParticipateSerivce;
 import org.example.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
@@ -24,42 +28,28 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 	// 중복된 키(사용자 id)인 경우 덮어씌운다. 그리고 들어온 순서대로 값을 저장하기 위해서 LinkedHashMap을 사용했다.
 	HashMap<String, WebSocketSession> socketSessions = new LinkedHashMap<String, WebSocketSession>();
 	
-	
 	@Autowired
 	private ChatMessageService chatMessageService;
 	
 	@Autowired
 	private ChatService chatService;
 	
+	@Autowired
+	private ChatParticipateSerivce participateSerivce;
+	
 	private ObjectMapper jsonMapper = new ObjectMapper();
 	private ChatMessageVO msgObj = new ChatMessageVO();
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String userId = getUserId(session);
-		String userNickname = getNickname(userId);
-		socketSessions.put(userId, session);		
-		log.info(userId + "의 소켓은 정상적!");
-
 		/*
 		 * 이 부분에서 채팅방에 처음 들어온 사용자인 경우에만 id를 키로 하는 현재의 세션을 저장하려고 했는데 에러가 발생했다. 이유는 새로고침 할
 		 * 때나 재접속시 webSocketSession이 바뀌기 때문이다. 그래서 처음 들어온 경우에는 해당id로 세션을 생성해주면 되고, 기존에
 		 * 접속한 사용자인 경우 해당 id에 해당하는 세션값을 덮어씌워주면 된다.
 		 */
-		
-		/*
-		 * socketSessions.forEach((id, sess) -> {
-		 * userNicknameList.add(chatService.getUserById(getUserId(sess)).getNickname());
-		 * });
-		 */ 
-		
+		socketSessions.put(userId, session);
+		log.info(userId + "의 소켓은 정상적!");
 		log.info(socketSessions);
-		/*
-		 * socketSessions.forEach((id, sess) -> { try { // jsp페이지에 보낼 메세지 String String
-		 * passToJspMessage = ChatAction.SEE + "|" + userNickname + "|" + userId;
-		 * sess.sendMessage(new TextMessage(passToJspMessage));
-		 * log.info("---passToJspMessage-----------------> " + passToJspMessage); }
-		 * catch (IOException e) { log.info("전송 에러!"); e.printStackTrace(); } });
-		 */
 	}
 
 	// 메세지를 받는 역할읗 한다.
@@ -71,10 +61,9 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		msgObj = jsonMapper.readValue(rawMessage, ChatMessageVO.class); // json형식의 문자를 특정 클래스로 캐스팅(? 담아준다)
 
 		// 메세지를 db(tbl_chat_message)에 저장함
-		if(msgObj.getAction() != ChatAction.SEE) {
+		if(msgObj.getAction() != ChatAction.SEE && msgObj.getAction() != ChatAction.UNSEE) {
 			chatMessageService.insertChatMessage(msgObj);
 		}
-
 		// 일반 전송한 경우
 		if (msgObj.getAction() == ChatAction.SEND) {
 			// 받은 메세지를 모든 사용자들에게 전송(여기서 특정한 채널에 전송을 해야함)
@@ -115,6 +104,18 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 					e.printStackTrace();
 				}
 			});
+		}// 채팅방에서 잠시 나간경우
+		else if (msgObj.getAction() == ChatAction.UNSEE) {
+			socketSessions.forEach((userId, sess) -> {
+				try {
+					log.info("UNSEE : "+msgObj);
+					String passToJspMessage = msgObj.getAction() + "|" + msgObj.getChnum() + "|" + msgObj.getSender() + "|" + msgObj.getId();
+					sess.sendMessage(new TextMessage(passToJspMessage));
+				} catch (IOException e) {
+					log.info("전송 에러!");
+					e.printStackTrace();
+				}
+			});
 		}
 
 		log.info("모두에게 전송하기 전 세션 리스트 : " + socketSessions);
@@ -130,17 +131,23 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		log.info("새로고침 후 변경된 소켓 세션 목록 : " + socketSessions);
 		System.out.println("채팅창 나간사람: " + userId + " 상태: " + status);
 		
-		socketSessions.forEach((id, sess) -> {
-			try { // jsp페이지에 보낼 메세지 String
-				String passToJspMessage = sender + "|" + userId + "|" + ChatAction.UNSEE;
-				sess.sendMessage(new TextMessage(passToJspMessage));
-				log.info("---페이지 나간 후(소켓 끊긴 후 )-----------------> " + getUserId(sess) + "에게  [" + passToJspMessage + "] 전달함");
-			} catch (IOException e) {
-				log.info("전송 에러!");
-				e.printStackTrace();
-			}
-		}); 
-
+		ChatParticipateVO participateVO = participateSerivce.getEnableVO(userId);
+		if(participateVO != null) {
+			int chnum = participateVO.getChnum();
+			String id = participateVO.getId();
+			participateSerivce.updateOutChatParticipateVO(chnum, id);
+			// TODO enable을 0으로 변경 되었으므로 해당 id와  chnum을 사용해서 부재중임을 msg로 알려야한다.
+			socketSessions.forEach((sessId, sess) -> {
+				try { // jsp페이지에 보낼 메세지 String String
+					String passToJspMessage = ChatAction.UNSEE + "|" + chnum + "|" + sender + "|" + userId;
+					sess.sendMessage(new TextMessage(passToJspMessage));
+					log.info("---채팅방 나갔으므로 out표시 -----------------> " + passToJspMessage);
+				} catch (IOException e) {
+					log.info("전송 에러!");
+					e.printStackTrace();
+				}
+			});
+		}
 	}
 
 	// 웹소켓 세션으로부터 사용자의 id를 받아옴

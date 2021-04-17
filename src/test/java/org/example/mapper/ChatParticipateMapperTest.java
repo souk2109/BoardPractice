@@ -19,8 +19,8 @@ public class ChatParticipateMapperTest {
 	
 	@Test
 	public void getTest() {
-		chatParticipateMapper.getChatParticipateVOByChnum(2753);
-		chatParticipateMapper.getChatParticipateVOByChnumAndId(2753, "user3");
+		chatParticipateMapper.getChatParticipateVOByChnum(2);
+		//chatParticipateMapper.getChatParticipateVOByChnumAndId(2753, "user3");
 	}
 	
 	@Test

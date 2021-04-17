@@ -20,5 +20,10 @@ public interface ChatParticipateMapper {
 	
 	//chnum과 id로  사용자가 나갔을 떄 업데이트
 	public int updateOutChatParticipateVO(@Param("chnum") int chnum, @Param("id")String id);
+
+	// 사용자의 활성화된 객체를 반환(하나 뿐임)
+	public ChatParticipateVO getEnableVO(String id);
+
+	public int deleteChatParticipateVO(@Param("chnum") int chnum, @Param("id")String id);
 	 
 }
