@@ -17,7 +17,6 @@
 	
 	<div class="col-xs-1 col-sm-1" style="height: 500px;"></div>
 	<div class="col-xs-2 col-sm-2" style="height: 500px; border: 2px solid green;" id="chat-title">
-		<input type="text">
 	</div>
 	<div class="col-xs-5 col-sm-6" style="height: 500px; border: 2px solid green;">
 		<div style="height: 90%; overflow: auto;" id="chat-content">
@@ -53,12 +52,13 @@
 			for(var i=0; i<list.length; i++){
 				// 방장이거나 참여중인 사람이거나
 				if(list[i].validate == 2 || list[i].validate == 4){
+					// 읽지 않은 채팅 수 가져옴
 					let unReadChatCount = null;
 					chatService.getUnReadChatCount({chnum : list[i].chnum, id : id} , function(result) {
 						unReadChatCount = result;
 						console.log('unReadChatCount : ' + unReadChatCount);
 					});
-					str += "<div class='text-center alert alert-warning chat-title' style='cursor:pointer' data-hostid="+list[i].hostId+" data-chnum=" + list[i].chnum + ">" + list[i].roomNick+"</div>";
+					str += "<div class='text-center alert alert-warning chat-title' style='cursor:pointer' data-hostid="+list[i].hostId+" data-chnum=" + list[i].chnum + "><span data-unreadNum=" + list[i].chnum + " style='font-weight:900; color: blue;'>" + unReadChatCount+ "</span>&nbsp&nbsp" + list[i].roomNick + "</div>";
 				}
 			}
 			$("#chat-title").append(str);
@@ -92,6 +92,7 @@
 			currentHostId = $(this).data("hostid");
 			send(JSON.stringify({sender:sender, id : id, chnum : currentChnum, action : 'SEE'}));
 			
+			$("[data-unreadNum=" + currentChnum + "]").html('0');	
 
 			userObj = {id:id, chnum:currentChnum};
 
@@ -153,7 +154,7 @@
 				let messageSender = null;
 				let message = null;
 				let messageId = null;
-				
+				 
 				if(action === 'SEND'){
 					if (messageArr.length === 5) {
 						chnum = messageArr[1];
@@ -161,6 +162,16 @@
 						message = messageArr[3];
 						messageId = messageArr[4];
 						sendDate = new Date();
+						
+						let unreadMessageNum = $("[data-unreadNum=" + chnum + "]").html();
+						
+						console.log("currentChnum : "+currentChnum);
+						// 안읽은 채팅 수 증가해줌
+						if(parseInt(chnum) !== currentChnum){
+							$("[data-unreadNum=" + chnum + "]").html(parseInt(unreadMessageNum)+1);	
+						}
+						
+						
 						console.log("messageArr.length : "+ messageArr.length + ", " + chnum + "채널, 아이디: "+messageId + messageSender + " : [" + message + "] action : "+ action);
 						// 보낸 사람과 받는사람이 같은 채널인 경우
 						if(parseInt(chnum) === currentChnum){
