@@ -2,13 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.mapper.ChatMessageMapper">
+	<!-- 모든 메세지를 가지고 옴 -->
 	<select id="getAllChatMessage" resultType="org.example.domain.ChatMessageVO">
 		<![CDATA[
 			select * 
 			from tbl_chat_message 
 			where chnum =#{chnum} and sendDate >= date_format(#{approvalDate},'%Y-%m-%d %H:%i:%s')
 		]]>
-	</select>	
+	</select>
+	
+	
+	<!-- 이미 읽은 메세지들을 가져옴  -->
+	<select id="getReadChatMessage" resultType="org.example.domain.ChatMessageVO">
+		<![CDATA[
+			select * 
+			from tbl_chat_message 
+			where chnum = 6351 and sendDate <= (select outdate from tbl_chat_participate where id =#{id} and chnum = #{chnum});
+		]]>
+	</select>
+	
+	<!-- 아직 읽지 않은 메세지들을 가져옴  -->
+	<select id="getUnReadChatMessage" resultType="org.example.domain.ChatMessageVO">
+		<![CDATA[
+			select * 
+			from tbl_chat_message 
+			where chnum = #{chnum} and sendDate > (select outdate from tbl_chat_participate where id =#{id} and chnum = #{chnum});
+		]]>
+	</select>
+	
+	<!-- 아직 읽지 않은 메세지들의 수를 가져옴  -->
+	<select id="getUnReadChatCount" resultType="int">
+		<![CDATA[
+			select count(*) 
+			from tbl_chat_message 
+			where chnum = #{chnum} and sendDate > (select outdate from tbl_chat_participate where id =#{id} and chnum = #{chnum});
+		]]>
+	</select>
 	
 	<insert id="insertChatMessage">
 		 insert into tbl_chat_message(chnum, sender, id, message, action) 

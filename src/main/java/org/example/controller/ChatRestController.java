@@ -198,4 +198,11 @@ public class ChatRestController {
 		return new ResponseEntity<List<ChatMessageVO>>(messageList, HttpStatus.OK);
 	}
 	
+	@PostMapping(value = "/getUnReadChatCount", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
+	public String getUnReadChatCount(@RequestBody ChatRoomVO chatVO) {
+		log.info("chatVO 결과 : " + chatVO);
+		int result = chatMessageService.getUnReadChatCount(chatVO.getChnum(), chatVO.getId());
+		log.info("getUnReadChatCount 결과 : " + result);
+		return String.valueOf(result);
+	}
 }

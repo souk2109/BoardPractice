@@ -20,13 +20,12 @@ import lombok.extern.log4j.Log4j;
 	"file:src/main/webapp/WEB-INF/spring/security-context.xml"})
 @Log4j
 public class ChatMessageMapperTest {
-	@Autowired
-	private ChatRoomMapper chatRoomMapper;
 	
 	@Autowired
 	private ChatValidateMapper chatValidateMapper;
 	
-	
+	@Autowired
+	private ChatMessageMapper chatMessageMapper; 
 	
 	@Test
 	public void test() {
@@ -35,5 +34,12 @@ public class ChatMessageMapperTest {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 		String mysqlDate = format.format(Jdate);
 		System.out.println(mysqlDate); 
+	}
+	
+	@Test
+	public void test2() {
+		chatMessageMapper.getUnReadChatCount(6351, "user2");
+		chatMessageMapper.getUnReadChatMessage(6351, "user2");
+		chatMessageMapper.getReadChatMessage(6351, "user2");
 	}
 }

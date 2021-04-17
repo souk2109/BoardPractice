@@ -41,4 +41,19 @@ public class ChatMessageServiceImpl implements ChatMessageService{
 		return chatMessageMapper.deleteChatMessageById(id);
 	}
 
+	@Override
+	public List<ChatMessageVO> getUnReadChatMessage(int chnum, String id) {
+		return chatMessageMapper.getUnReadChatMessage(chnum, id);
+	}
+
+	@Override
+	public List<ChatMessageVO> getReadChatMessage(int chnum, String id) {
+		return chatMessageMapper.getReadChatMessage(chnum, id);
+	}
+
+	@Override
+	public int getUnReadChatCount(int chnum, String id) {
+		return chatMessageMapper.getUnReadChatCount(chnum, id);
+	}
+
 }

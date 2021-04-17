@@ -19,7 +19,7 @@
 	<div class="col-xs-2 col-sm-2" style="height: 500px; border: 2px solid green;" id="chat-title">
 		<input type="text">
 	</div>
-	<div class="col-xs-6 col-sm-6" style="height: 500px; border: 2px solid green;">
+	<div class="col-xs-5 col-sm-6" style="height: 500px; border: 2px solid green;">
 		<div style="height: 90%; overflow: auto;" id="chat-content">
 			<div class="text-center">채널을 선택하세요!</div>
 		</div>
@@ -30,7 +30,7 @@
 			<button id="outbtn" class="btn btn-warning col-xs-2 col-sm-2">나가기</button>
 		</div>
 	</div>
-	<div class="col-xs-2 col-sm-2" style="height: 500px;">
+	<div class="col-xs-3 col-sm-2" style="height: 500px;">
 		<div class="text-center" style="background-color: yellow;">참여중인 사람
 			<div id="current-people" style="background-color: #FFFFCC"></div>
 		</div>
@@ -53,12 +53,18 @@
 			for(var i=0; i<list.length; i++){
 				// 방장이거나 참여중인 사람이거나
 				if(list[i].validate == 2 || list[i].validate == 4){
+					let unReadChatCount = null;
+					chatService.getUnReadChatCount({chnum : list[i].chnum, id : id} , function(result) {
+						unReadChatCount = result;
+						console.log('unReadChatCount : ' + unReadChatCount);
+					});
 					str += "<div class='text-center alert alert-warning chat-title' style='cursor:pointer' data-hostid="+list[i].hostId+" data-chnum=" + list[i].chnum + ">" + list[i].roomNick+"</div>";
 				}
 			}
 			$("#chat-title").append(str);
 			 clickTitle();
 		});
+		 
 	}
 	getChatroomTitles();
 	function clickTitle() {
@@ -121,9 +127,9 @@
 				let str='';
 				for(var i=0; i< list.length; i++){
 					if(list[i].enable === true){
-						str += "<div data-nickname="+list[i].nickname+">●" + list[i].nickname + "</div>";
+						str += "<div data-nickname="+list[i].nickname+">" + list[i].nickname + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style='background-color: green' class='badge'>On</span></div>";
 					}else{
-						str += "<div data-nickname="+list[i].nickname+">" + list[i].nickname + "</div>";
+						str += "<div data-nickname="+list[i].nickname+">" + list[i].nickname + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style='background-color: red' class='badge'>Off</span></div>";
 					}
 				}
 				$("#current-people").append(str);
@@ -192,7 +198,7 @@
 						messageSender = messageArr[2];
 						messageId = messageArr[3];
 						if(parseInt(chnum) === currentChnum){
-							$("[data-nickname=" + messageSender + "]").html("●"+messageSender);
+							$("[data-nickname=" + messageSender + "]").html(messageSender + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style='background-color: green' class='badge'>On</span>");
 						}
 					}
 				}else if(action === 'UNSEE'){
@@ -201,12 +207,9 @@
 						messageSender = messageArr[2];
 						messageId = messageArr[3];
 						if(parseInt(chnum) === currentChnum){
-							$("[data-nickname=" + messageSender + "]").html(messageSender);
+							$("[data-nickname=" + messageSender + "]").html(messageSender + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style='background-color: red' class='badge'>Off</span>");
 						}
 					}
-				}
-				else{
-					// alert('SEE 잘못된 전송!');
 				}
 			}				
 			

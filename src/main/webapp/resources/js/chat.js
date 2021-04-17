@@ -386,6 +386,28 @@ var chatService = (function() {
 			}
 		});
 	}
+	
+ 
+	function getUnReadChatCount(userObj, callback, error) {
+		$.ajax({
+			type : 'post',
+			url : '/board002/chat/getUnReadChatCount/',
+			data : JSON.stringify(userObj),
+			contentType : "application/json; charset=utf-8",
+			success : function(result, status, xhr) {
+				if(callback){
+					callback(result);
+				}
+			},
+			error : function(xhr, status, err) {
+				if(error){
+					error(err);
+				}
+			}
+		});
+	}
+
+	
 	return {
 		getMyChatRooms : getMyChatRooms,
 		deleteChatRoom : deleteChatRoom, 
@@ -408,6 +430,8 @@ var chatService = (function() {
 		makeParticipateObj : makeParticipateObj,
 		getChatParticipateList : getChatParticipateList,
 		updateInParticipate : updateInParticipate,
-		updateOutParticipate : updateOutParticipate
+		updateOutParticipate : updateOutParticipate,
+		
+		getUnReadChatCount : getUnReadChatCount
 	};
 })();
