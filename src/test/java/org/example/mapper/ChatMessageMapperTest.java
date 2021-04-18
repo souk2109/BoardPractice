@@ -38,8 +38,6 @@ public class ChatMessageMapperTest {
 	
 	@Test
 	public void test2() {
-		chatMessageMapper.getUnReadChatCount(6351, "user2");
-		chatMessageMapper.getUnReadChatMessage(6351, "user2");
-		chatMessageMapper.getReadChatMessage(6351, "user2");
+		chatMessageMapper.getUnReadChatMessage(424, "user2");
 	}
 }

@@ -17,7 +17,7 @@
 		<![CDATA[
 			select * 
 			from tbl_chat_message 
-			where chnum = 6351 and sendDate <= (select outdate from tbl_chat_participate where id =#{id} and chnum = #{chnum});
+			where chnum = #{chnum} and sendDate <= (select outdate from tbl_chat_participate where id =#{id} and chnum = #{chnum});
 		]]>
 	</select>
 	

@@ -205,4 +205,22 @@ public class ChatRestController {
 		log.info("getUnReadChatCount 결과 : " + result);
 		return String.valueOf(result);
 	}
+	
+	
+	@GetMapping(value = "/getUnReadChatMessage/{chnum}/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<ChatMessageVO>> getUnReadChatMessage(@PathVariable("chnum") int chnum, @PathVariable("id") String id){
+		// 특정 채팅방의 대화 목록을 가져옴
+		List<ChatMessageVO> unReadMessageList = chatMessageService.getUnReadChatMessage(chnum, id);
+		log.info("unReadMessageList: "+unReadMessageList);
+		return new ResponseEntity<List<ChatMessageVO>>(unReadMessageList, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/getReadChatMessage/{chnum}/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<ChatMessageVO>> getReadChatMessage(@PathVariable("chnum") int chnum, @PathVariable("id") String id){
+		// 특정 채팅방의 대화 목록을 가져옴
+		List<ChatMessageVO> readMessageList = chatMessageService.getReadChatMessage(chnum, id);
+		log.info("readMessageList: "+readMessageList);
+		return new ResponseEntity<List<ChatMessageVO>>(readMessageList, HttpStatus.OK);
+	}
+	
 }

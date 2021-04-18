@@ -278,8 +278,6 @@ var chatService = (function() {
 		});
 	}
 	
-	
-	
 	function displayLongTime(timeValue) {	
 		let dateObj = new Date(timeValue);
 		let yy = dateObj.getFullYear();
@@ -408,6 +406,39 @@ var chatService = (function() {
 	}
 
 	
+	function getChatMessage(userObj, callback) {
+		$.getJSON("/board002/chat/getMessage/" + userObj.chnum + "/"+ userObj.id + ".json", function(data) {
+			if(data){
+				callback(data);
+			}
+		}).fail(function(xhr, status, err) {
+			if(error)
+				error();
+		});
+	}
+	
+	function getUnReadChatMessage(userObj, callback) {
+		$.getJSON("/board002/chat/getUnReadChatMessage/" + userObj.chnum + "/"+ userObj.id + ".json", function(data) {
+			if(data){
+				callback(data);
+			}
+		}).fail(function(xhr, status, err) {
+			if(error)
+				error();
+		});
+	}
+	
+	function getReadChatMessage(userObj, callback) {
+		$.getJSON("/board002/chat/getReadChatMessage/" + userObj.chnum + "/"+ userObj.id + ".json", function(data) {
+			if(data){
+				callback(data);
+			}
+		}).fail(function(xhr, status, err) {
+			if(error)
+				error();
+		});
+	}
+	
 	return {
 		getMyChatRooms : getMyChatRooms,
 		deleteChatRoom : deleteChatRoom, 
@@ -422,7 +453,9 @@ var chatService = (function() {
 		updateValidate : updateValidate,
 		deleteValidate : deleteValidate,
 		updateUserid : updateUserid,
+		
 		getChatMessage : getChatMessage,
+		
 		requestApproval : requestApproval,
 		outRoomRequest : outRoomRequest,
 		getNicknameById : getNicknameById,
@@ -432,6 +465,8 @@ var chatService = (function() {
 		updateInParticipate : updateInParticipate,
 		updateOutParticipate : updateOutParticipate,
 		
-		getUnReadChatCount : getUnReadChatCount
+		getUnReadChatCount : getUnReadChatCount,
+		getUnReadChatMessage : getUnReadChatMessage,
+		getReadChatMessage : getReadChatMessage
 	};
 })();

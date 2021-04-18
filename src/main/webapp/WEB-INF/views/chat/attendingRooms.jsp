@@ -56,7 +56,6 @@
 					let unReadChatCount = null;
 					chatService.getUnReadChatCount({chnum : list[i].chnum, id : id} , function(result) {
 						unReadChatCount = result;
-						console.log('unReadChatCount : ' + unReadChatCount);
 					});
 					str += "<div class='text-center alert alert-warning chat-title' style='cursor:pointer' data-hostid="+list[i].hostId+" data-chnum=" + list[i].chnum + "><span data-unreadNum=" + list[i].chnum + " style='font-weight:900; color: blue;'>" + unReadChatCount+ "</span>&nbsp&nbsp" + list[i].roomNick + "</div>";
 				}
@@ -70,59 +69,43 @@
 	function clickTitle() {
 		// 특정 채팅방 제목을 클릭했을 때 채널 번호를 바꾼 후 해당 데이터를 가져옴
 		$(".chat-title").on("click", function() {
+			$("#chat-content").html(''); // 현재 채팅 메세지들을 지운다.
 			$("#chat-service").show(); // 채팅방 제목을 클릭했을 때 메세지를 작성하고 전송하는 view를 보여줌
 			$(".chat-title").attr('class', 'text-center alert alert-warning chat-title');
 			$(this).attr('class', 'text-center alert alert-success chat-title');
-			console.log('currentChnum : '+ currentChnum);
 			
 			// 기존에 있던 체널을 나오고 다른 채널의 채팅방을 보고 있는 것이므로, 기존의 방에서 out 해준다.
 			if(currentChnum !== null){
 				chatService.updateOutParticipate(userObj, function(result) {
 					if(result === 'success'){
 						send(JSON.stringify({sender:sender, id : id, chnum : currentChnum, action : 'UNSEE'}));
-						console.log(sender + ", " + id + ", "+ currentChnum);
-						console.log("[updateOutParticipate] "+result);	
-					}else{
-						console.log("[updateOutParticipate] "+result);
+					}
+					else{
+						console.log("[updateOutParticipate error]");
 						return;
 					}
 				});
 			}
 			currentChnum = $(this).data("chnum");
 			currentHostId = $(this).data("hostid");
-			send(JSON.stringify({sender:sender, id : id, chnum : currentChnum, action : 'SEE'}));
-			
-			$("[data-unreadNum=" + currentChnum + "]").html('0');	
-
 			userObj = {id:id, chnum:currentChnum};
-
+			
+			// 현재 채팅방에서 읽지 않은 채팅의 수를 가져옴
+			let unReadChatCount = null;
+			chatService.getUnReadChatCount(userObj , function(result) {
+				unReadChatCount = result;
+			});
+			
+			send(JSON.stringify({sender:sender, id : id, chnum : currentChnum, action : 'SEE'})); // 현재 채팅방을 읽고있음을 알려줌
+			console.log("현재 채팅방에서 인읽은 메세지 수: "+unReadChatCount);
+			
+			// 현재 채팅방에 참여하고 있으므로 tbl_chat_participate의 indate를 갱신해준다.
 			chatService.updateInParticipate(userObj, function(result) {
 				console.log("[updateInParticipate] "+result);	
 				if(result === 'fail') {return;}
 			});
 			
-			// id와 chnum을 넘겨서 받아와야한다.(id는 채팅방에 접속한 날짜를 얻어내기 위해서 사용)
-			chatService.getChatMessage(userObj, function(list) {
-				console.log(list);
-				$("#chat-content").html('');
-				let str = '';
-				for(var i=0; i<list.length; i++){
-					if(list[i].action == 'SEND'){
-						if(list[i].id == id){
-							str += "<div class='alert alert-info' style='text-align:right'>나 : " + list[i].message + "<div style='color:#8bafc1'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
-						}else{
-							str += "<div class='alert alert-warning' style='text-align:left'>" + list[i].sender +" : "+ list[i].message + "<div style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
-						}	
-					}else if(list[i].action == 'OUT'){
-						str += "<div class='alert' style='text-align:center'>" + list[i].message +"<span style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</span></div>";
-					}else if(list[i].action == 'JOIN'){
-						str += "<div class='alert' style='text-align:center'>" + list[i].message +"<span style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</span></div>";
-					}
-				}
-				$("#chat-content").append(str);
-				scrolldown();
-			});
-			// db로 부터 받아와서 현재 채팅방을 보고있는 사람에 대해 표시함
+			// 현재 채팅방에 참여하고 있는 사람을 표시 하고, 실시간으로 보고있는 사람에 대해 표시함
 			chatService.getChatParticipateList(currentChnum, function(list) {
 				$("#current-people").html('');
 				let str='';
@@ -136,6 +119,71 @@
 				$("#current-people").append(str);
 			});
 			
+			// 읽지 않은 메세지의 수가 1개 이상인 경우
+			if(unReadChatCount > 0){
+				$("[data-unreadNum=" + currentChnum + "]").html('0'); // 채팅방을 클릭했으므로 안읽은 메세지 수를 0으로 초기화
+				chatService.getReadChatMessage(userObj, function(list) {
+					let str = '';
+					for(var i=0; i<list.length; i++){
+						if(list[i].action == 'SEND'){
+							if(list[i].id == id){
+								str += "<div class='alert alert-info' style='text-align:right'>나 : " + list[i].message + "<div style='color:#8bafc1'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
+							}else{
+								str += "<div class='alert alert-warning' style='text-align:left'>" + list[i].sender +" : "+ list[i].message + "<div style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
+							}	
+						}else if(list[i].action == 'OUT'){
+							str += "<div class='alert' style='text-align:center'>" + list[i].message +"<span style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</span></div>";
+						}else if(list[i].action == 'JOIN'){
+							str += "<div class='alert' style='text-align:center'>" + list[i].message +"<span style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</span></div>";
+						}
+					}
+					str += "<div class='alert' style='text-align:center'>여기까지 읽으셨습니다.</div>";
+					$("#chat-content").append(str);
+					scrolldown();
+				});
+				
+				chatService.getUnReadChatMessage(userObj, function(list) {
+					console.log("list 출력!!");
+					console.log(list);
+					let str = '';
+					for(var i=0; i<list.length; i++){
+						if(list[i].action == 'SEND'){
+							if(list[i].id == id){
+								str += "<div class='alert alert-info' style='text-align:right'>나 : " + list[i].message + "<div style='color:#8bafc1'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
+							}else{
+								str += "<div class='alert alert-warning' style='text-align:left'>" + list[i].sender +" : "+ list[i].message + "<div style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
+							}	
+						}else if(list[i].action == 'OUT'){
+							str += "<div class='alert' style='text-align:center'>" + list[i].message +"<span style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</span></div>";
+						}else if(list[i].action == 'JOIN'){
+							str += "<div class='alert' style='text-align:center'>" + list[i].message +"<span style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</span></div>";
+						}
+					}
+					$("#chat-content").append(str);
+				});
+			}
+			// 읽지 않은 메세지의 수가 0개 이상인 경우(그냥 모든 메세지를 가지고 오면 된다.)
+			else{
+				// id와 chnum을 넘겨서 받아와야한다.(id는 채팅방에 접속한 날짜를 얻어내기 위해서 사용)
+				chatService.getChatMessage(userObj, function(list) {
+					let str = '';
+					for(var i=0; i<list.length; i++){
+						if(list[i].action == 'SEND'){
+							if(list[i].id == id){
+								str += "<div class='alert alert-info' style='text-align:right'>나 : " + list[i].message + "<div style='color:#8bafc1'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
+							}else{
+								str += "<div class='alert alert-warning' style='text-align:left'>" + list[i].sender +" : "+ list[i].message + "<div style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</div></div>";
+							}	
+						}else if(list[i].action == 'OUT'){
+							str += "<div class='alert' style='text-align:center'>" + list[i].message +"<span style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</span></div>";
+						}else if(list[i].action == 'JOIN'){
+							str += "<div class='alert' style='text-align:center'>" + list[i].message +"<span style='color:#b9b189'>" + chatService.messageTime(list[i].sendDate) + "</span></div>";
+						}
+					}
+					$("#chat-content").append(str);
+					scrolldown();
+				});
+			}
 		});	
 	}
 </script>
@@ -185,7 +233,8 @@
 					}else{
 						alert('SEND 잘못된 전송!');
 					}
-				}else if(action === 'OUT'){
+				}
+				else if(action === 'OUT'){
 					if (messageArr.length === 5) {
 						chnum = messageArr[1];
 						messageSender = messageArr[2];
@@ -211,7 +260,35 @@
 					}else{
 						alert('OUT 잘못된 전송!');
 					}
-				}else if(action === 'SEE'){
+				}
+				else if(action === 'JOIN'){
+					if (messageArr.length === 5) {
+						chnum = messageArr[1];
+						messageSender = messageArr[2];
+						message = messageArr[3];
+						messageId = messageArr[4];
+						sendDate = new Date();
+						console.log(chnum + "채널, 아이디: "+messageId + messageSender + " : [" + message + "] action : "+ action);
+						
+						let unreadMessageNum = $("[data-unreadNum=" + chnum + "]").html();
+						
+						console.log("currentChnum : "+currentChnum);
+						// 안읽은 채팅 수 증가해줌
+						if(parseInt(chnum) !== currentChnum){
+							$("[data-unreadNum=" + chnum + "]").html(parseInt(unreadMessageNum)+1);	
+						}
+						
+						// 보낸 사람과 받는사람이 같은 채널인 경우
+						if(parseInt(chnum) === currentChnum){
+							$("#current-people").append("<div data-nickname=" + messageSender+">" + messageSender + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style='background-color: green' class='badge'>On</span></div>");
+							$("#chat-content").append("<div class='alert' style='text-align:center'>" + message +"<span style='color:#b9b189'>" + chatService.messageTime(sendDate) + "</span></div>");
+							scrolldown();
+						}
+					}else{
+						alert('OUT 잘못된 전송!');
+					}
+				}
+				else if(action === 'SEE'){
 					if (messageArr.length === 4) {
 						chnum = messageArr[1];
 						messageSender = messageArr[2];
@@ -220,7 +297,8 @@
 							$("[data-nickname=" + messageSender + "]").html(messageSender + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style='background-color: green' class='badge'>On</span>");
 						}
 					}
-				}else if(action === 'UNSEE'){
+				}
+				else if(action === 'UNSEE'){
 					if (messageArr.length === 4) {
 						chnum = messageArr[1];
 						messageSender = messageArr[2];
