@@ -194,6 +194,14 @@
 						sendDate = new Date();
 						console.log(chnum + "채널, 아이디: "+messageId + messageSender + " : [" + message + "] action : "+ action);
 						
+						let unreadMessageNum = $("[data-unreadNum=" + chnum + "]").html();
+						
+						console.log("currentChnum : "+currentChnum);
+						// 안읽은 채팅 수 증가해줌
+						if(parseInt(chnum) !== currentChnum){
+							$("[data-unreadNum=" + chnum + "]").html(parseInt(unreadMessageNum)+1);	
+						}
+						
 						// 보낸 사람과 받는사람이 같은 채널인 경우
 						if(parseInt(chnum) === currentChnum){
 							$("[data-nickname=" + messageSender + "]").html('');

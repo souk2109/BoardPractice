@@ -60,18 +60,16 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 		String rawMessage = message.getPayload(); // json형태의 메세지
 		msgObj = jsonMapper.readValue(rawMessage, ChatMessageVO.class); // json형식의 문자를 특정 클래스로 캐스팅(? 담아준다)
 
-		// 메세지를 db(tbl_chat_message)에 저장함
-		if(msgObj.getAction() != ChatAction.SEE && msgObj.getAction() != ChatAction.UNSEE) {
+		// action이 send, out, join인 경우 db에 저장 후 jsp페이지에 전송
+		if (msgObj.getAction() == ChatAction.SEND || msgObj.getAction() == ChatAction.OUT || msgObj.getAction() == ChatAction.JOIN) {
 			chatMessageService.insertChatMessage(msgObj);
-		}
-		// 일반 전송한 경우
-		if (msgObj.getAction() == ChatAction.SEND) {
 			// 받은 메세지를 모든 사용자들에게 전송(여기서 특정한 채널에 전송을 해야함)
 			socketSessions.forEach((userId, sess) -> {
 				try {
 					// jsp페이지에 보낼 메세지
 					String passToJspMessage = msgObj.getAction() + "|" + msgObj.getChnum() + "|" + msgObj.getSender() + "|" + msgObj.getMessage() + "|" + msgObj.getId();
 					sess.sendMessage(new TextMessage(passToJspMessage));
+					log.info("action : "+msgObj.getAction());
 				} catch (IOException e) {
 					log.info("전송 에러!");
 					e.printStackTrace();
@@ -79,36 +77,11 @@ public class ChatSocketHandler extends TextWebSocketHandler {
 			});
 		}
 
-		// 채팅방 퇴장한 경우
-		else if (msgObj.getAction() == ChatAction.OUT) {
-			socketSessions.remove(sender);
+		// // action이 see, unsee인 경우 db에 저장 안하고 jsp페이지에 바로 전송
+		else if (msgObj.getAction() == ChatAction.SEE || msgObj.getAction() == ChatAction.UNSEE) {
 			socketSessions.forEach((userId, sess) -> {
 				try {
-					String passToJspMessage = msgObj.getAction() + "|" + msgObj.getChnum() + "|" + msgObj.getSender() + "|" + msgObj.getMessage() + "|" + msgObj.getId();
-					sess.sendMessage(new TextMessage(passToJspMessage));
-				} catch (IOException e) {
-					log.info("전송 에러!");
-					e.printStackTrace();
-				}
-			});
-		}
-		// 채팅방에 참여한 경우
-		else if (msgObj.getAction() == ChatAction.SEE) {
-			socketSessions.forEach((userId, sess) -> {
-				try {
-					log.info("SEE : "+msgObj);
-					String passToJspMessage = msgObj.getAction() + "|" + msgObj.getChnum() + "|" + msgObj.getSender() + "|" + msgObj.getId();
-					sess.sendMessage(new TextMessage(passToJspMessage));
-				} catch (IOException e) {
-					log.info("전송 에러!");
-					e.printStackTrace();
-				}
-			});
-		}// 채팅방에서 잠시 나간경우
-		else if (msgObj.getAction() == ChatAction.UNSEE) {
-			socketSessions.forEach((userId, sess) -> {
-				try {
-					log.info("UNSEE : "+msgObj);
+					log.info("action : "+msgObj.getAction());
 					String passToJspMessage = msgObj.getAction() + "|" + msgObj.getChnum() + "|" + msgObj.getSender() + "|" + msgObj.getId();
 					sess.sendMessage(new TextMessage(passToJspMessage));
 				} catch (IOException e) {
